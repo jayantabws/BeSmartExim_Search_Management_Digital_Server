@@ -116,7 +116,7 @@ public class UserSearchService {
 			connection = jdbcTemplate.getDataSource().getConnection();
 
 			String proeName = null;
-			int isAdvance = 1;
+			// int isAdvance = 1;
 
 			if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("IND"))
 				proeName = QueryConstant.searchProcedure;
@@ -130,23 +130,23 @@ public class UserSearchService {
 
 			
 			
-			if((userSearchRequest.getHsCodeList()== null || userSearchRequest.getHsCodeList().isEmpty()) && 
-					(userSearchRequest.getHsCode4DigitList()== null || userSearchRequest.getHsCode4DigitList().isEmpty()) && 
-					(userSearchRequest.getExporterList()== null || userSearchRequest.getExporterList().isEmpty())&& 
-					(userSearchRequest.getImporterList()== null || userSearchRequest.getImporterList().isEmpty()) && 
-					(userSearchRequest.getCityOriginList()== null || userSearchRequest.getCityOriginList().isEmpty()) && 
-					(userSearchRequest.getCityDestinationList()== null || userSearchRequest.getCityDestinationList().isEmpty()) &&
-					(userSearchRequest.getPortOriginList()== null || userSearchRequest.getPortOriginList().isEmpty()) && 
-					(userSearchRequest.getPortDestinationList()== null || userSearchRequest.getPortDestinationList().isEmpty()) &&
-					(userSearchRequest.getShipModeList()== null || userSearchRequest.getShipModeList().isEmpty()) && 
-					(userSearchRequest.getStdUnitList()== null || userSearchRequest.getStdUnitList().isEmpty()))
-			{
-				isAdvance = 0;
-			}
+			//			if((userSearchRequest.getHsCodeList()== null || userSearchRequest.getHsCodeList().isEmpty()) && 
+//					(userSearchRequest.getHsCode4DigitList()== null || userSearchRequest.getHsCode4DigitList().isEmpty()) && 
+//					(userSearchRequest.getExporterList()== null || userSearchRequest.getExporterList().isEmpty())&& 
+//					(userSearchRequest.getImporterList()== null || userSearchRequest.getImporterList().isEmpty()) && 
+//					(userSearchRequest.getCityOriginList()== null || userSearchRequest.getCityOriginList().isEmpty()) && 
+//					(userSearchRequest.getCityDestinationList()== null || userSearchRequest.getCityDestinationList().isEmpty()) &&
+//					(userSearchRequest.getPortOriginList()== null || userSearchRequest.getPortOriginList().isEmpty()) && 
+//					(userSearchRequest.getPortDestinationList()== null || userSearchRequest.getPortDestinationList().isEmpty()) &&
+//					(userSearchRequest.getShipModeList()== null || userSearchRequest.getShipModeList().isEmpty()) && 
+//					(userSearchRequest.getStdUnitList()== null || userSearchRequest.getStdUnitList().isEmpty()))
+//			{
+//				isAdvance = 0;
+//			}
 			
 			
 			if(userSearchRequest.getPageNumber() == 0 && userSearchRequest.getNumberOfRecords() < 10000 
-					&& (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId().equals("") || userSearchRequest.getSearchId() == 0) && isAdvance == 0) {
+					&& (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId().equals("") || userSearchRequest.getSearchId() == 0) && !userSearchRequest.getSearchType().equals("ADVANCE")) {
 				CallableStatement callableStatement = connection.prepareCall(proeName);
 				callableStatement.setString(1, userSearchRequest.getSearchType().getValue());
 				callableStatement.setString(2, userSearchRequest.getTradeType().getValue());
