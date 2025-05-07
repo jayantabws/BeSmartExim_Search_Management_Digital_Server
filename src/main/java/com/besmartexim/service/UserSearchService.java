@@ -9,22 +9,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import javax.print.DocFlavor.STRING;
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.besmartexim.controller.UserSearchController;
 import com.besmartexim.database.entity.User;
 import com.besmartexim.database.entity.UserSearch;
 import com.besmartexim.database.repository.UserRepository;
@@ -47,13 +44,9 @@ import com.besmartexim.dto.response.ListStdUnitResponse;
 import com.besmartexim.dto.response.SearchDetails;
 import com.besmartexim.dto.response.SearchDetailsResponse;
 import com.besmartexim.dto.response.SuggestionListResponse;
-import com.besmartexim.dto.response.UserDetailsResponse;
 import com.besmartexim.dto.response.UserSearchResponse;
 import com.besmartexim.util.QueryConstant;
 import com.besmartexim.util.QueryUtil;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -116,7 +109,7 @@ public class UserSearchService {
 			connection = jdbcTemplate.getDataSource().getConnection();
 
 			String proeName = null;
-			// int isAdvance = 1;
+			//int isAdvance = 1;
 
 			if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("IND"))
 				proeName = QueryConstant.searchProcedure;
@@ -130,7 +123,7 @@ public class UserSearchService {
 
 			
 			
-			//			if((userSearchRequest.getHsCodeList()== null || userSearchRequest.getHsCodeList().isEmpty()) && 
+//			if((userSearchRequest.getHsCodeList()== null || userSearchRequest.getHsCodeList().isEmpty()) && 
 //					(userSearchRequest.getHsCode4DigitList()== null || userSearchRequest.getHsCode4DigitList().isEmpty()) && 
 //					(userSearchRequest.getExporterList()== null || userSearchRequest.getExporterList().isEmpty())&& 
 //					(userSearchRequest.getImporterList()== null || userSearchRequest.getImporterList().isEmpty()) && 
@@ -1577,9 +1570,10 @@ public class UserSearchService {
 			searchDetails.setRecordsDownloaded(userSearch.getRecordsDownloaded());
 		}
 		list.add(searchDetails);
-
+		
 		searchDetailsResponse.setQueryList(list);
-
+		searchDetailsResponse = convertCountryToList(searchDetailsResponse);
+		
 		return searchDetailsResponse;
 
 	}
@@ -1627,6 +1621,7 @@ public class UserSearchService {
 		}
 
 		searchDetailsResponse.setQueryList(list);
+		searchDetailsResponse = convertCountryToList(searchDetailsResponse);
 
 		return searchDetailsResponse;
 	}
@@ -1740,7 +1735,8 @@ public class UserSearchService {
 		}
 
 		searchDetailsResponse.setQueryList(list);
-
+		searchDetailsResponse = convertCountryToList(searchDetailsResponse);
+		
 		return searchDetailsResponse;
 	}
 
@@ -2007,6 +2003,21 @@ public class UserSearchService {
 				connection.close();
 		}
 		return listDistinctColumnValuesResponse;
+	}
+	
+	
+	private SearchDetailsResponse convertCountryToList(SearchDetailsResponse searchDetailsResponse) {
+		
+					// Converting Country from String to List<String>
+		Object countryCode = searchDetailsResponse.getQueryList().get(0).getUserSearchQuery().getCountryCode();
+				
+		if(countryCode instanceof String){
+			List<STRING> list = new ArrayList<>();
+			list.add((STRING) countryCode);
+			searchDetailsResponse.getQueryList().get(0).getUserSearchQuery().setCountryCode(list);
+		} 
+		
+		return searchDetailsResponse;
 	}
 
 }
