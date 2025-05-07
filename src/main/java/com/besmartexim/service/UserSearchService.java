@@ -2012,8 +2012,8 @@ public class UserSearchService {
 		Object countryCode = searchDetailsResponse.getQueryList().get(0).getUserSearchQuery().getCountryCode();
 				
 		if(countryCode instanceof String){
-			List<STRING> list = new ArrayList<>();
-			list.add((STRING) countryCode);
+			ArrayList<String> list = new ArrayList<String>();
+			list.add((String) countryCode);
 			searchDetailsResponse.getQueryList().get(0).getUserSearchQuery().setCountryCode(list);
 		} 
 		
