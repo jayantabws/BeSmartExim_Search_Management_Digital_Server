@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -1632,7 +1633,7 @@ public class UserSearchService {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	public SearchDetailsResponse listAllQueries(Long userId, Long uplineId, String isDownloaded, Long accessedBy)
+	public SearchDetailsResponse listAllQueries(Long userId, Long uplineId, String isDownloaded, Long accessedBy, Pageable pageable)
 			throws Exception {
 
 		SearchDetailsResponse searchDetailsResponse = new SearchDetailsResponse();
@@ -1643,20 +1644,20 @@ public class UserSearchService {
 		if (userId != null) {
 			if (isDownloaded != null && isDownloaded != "")
 				userSearchList = userSearchRepository.findByCreatedByAndIsDownloadedOrderByCreatedDateDesc(userId,
-						isDownloaded);
+						isDownloaded, pageable).getContent();
 			else
-				userSearchList = userSearchRepository.findByCreatedByOrderByCreatedDateDesc(userId);
+				userSearchList = userSearchRepository.findByCreatedByOrderByCreatedDateDesc(userId, pageable).getContent();
 		} else if (uplineId != null) {
 			if (isDownloaded != null && isDownloaded != "")
 				userSearchList = userSearchRepository.findByUplineIdAndIsDownloadedOrderByCreatedDateDesc(uplineId,
-						isDownloaded);
+						isDownloaded, pageable.getPageNumber(), pageable.getPageSize());
 			else
-				userSearchList = userSearchRepository.findByUplineIdOrderByCreatedDateDesc(uplineId);
+				userSearchList = userSearchRepository.findByUplineIdOrderByCreatedDateDesc(uplineId, pageable.getPageNumber(), pageable.getPageSize());
 		} else {
 			if (isDownloaded != null && isDownloaded != "")
-				userSearchList = userSearchRepository.findByIsDownloadedOrderByCreatedDateDesc(isDownloaded);
+				userSearchList = userSearchRepository.findByIsDownloadedOrderByCreatedDateDesc(isDownloaded, pageable).getContent();
 			else
-				userSearchList = userSearchRepository.findAllByOrderByCreatedDateDesc();
+				userSearchList = userSearchRepository.findAllByOrderByCreatedDateDesc(pageable).getContent();
 		}
 
 		// Fetch user management Data From User Data
@@ -1738,6 +1739,31 @@ public class UserSearchService {
 		searchDetailsResponse = convertCountryToList(searchDetailsResponse);
 		
 		return searchDetailsResponse;
+	}
+	
+	public long countAllQueries(Long userId, Long uplineId, String isDownloaded, Long accessedBy)
+			throws Exception {
+		
+		long count = 0l;
+
+		if (userId != null) {
+			if (isDownloaded != null && isDownloaded != "")
+				count = userSearchRepository.countByCreatedByAndIsDownloaded(userId, isDownloaded);
+			else
+				count = userSearchRepository.countByCreatedBy(userId);
+		} else if (uplineId != null) {
+			if (isDownloaded != null && isDownloaded != "")
+				count = userSearchRepository.countByUplineIdAndIsDownloaded(uplineId, isDownloaded);
+			else
+				count = userSearchRepository.countByUplineId(uplineId);
+		} else {
+			if (isDownloaded != null && isDownloaded != "")
+				count = userSearchRepository.countByIsDownloaded(isDownloaded);
+			else
+				count = userSearchRepository.count();
+		}
+		
+		return count;
 	}
 
 	public void updatesearchcount(@Valid SearchCountUpdateRequest searchCountUpdateRequest, Long searchId,
@@ -2019,5 +2045,22 @@ public class UserSearchService {
 		
 		return searchDetailsResponse;
 	}
+	
+	
+//	public long countByCreatedBy(Long createdBy) {
+//		return this.userSearchRepository.countByCreatedBy(createdBy);
+//	}
+//	
+//	public long countByCreatedByAndIsDownloaded(Long createdBy, String isDownloaded) {
+//		return this.userSearchRepository.countByCreatedByAndIsDownloaded(createdBy, isDownloaded);
+//	}
+//	
+//	public long countByIsDownloaded(String isDownloaded) {
+//		return this.userSearchRepository.countByIsDownloaded(isDownloaded);
+//	}
+//	
+//	public long countAll() {
+//		return this.userSearchRepository.count();
+//	}
 
 }
