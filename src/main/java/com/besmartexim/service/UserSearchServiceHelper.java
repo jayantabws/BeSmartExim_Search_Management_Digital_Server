@@ -305,6 +305,9 @@ public class UserSearchServiceHelper {
 				 imp.setUnit_value_cif_usd((rs.getString("unit_value_cif_usd") != null) ? rs.getBigDecimal("unit_value_cif_usd").toPlainString() : null);
 				 imp.setInvoice_currency(rs.getString("invoice_currency"));
 				 
+				 imp.setCtry_code(rs.getString("ctry_code"));
+				 imp.setCtry_name(rs.getString("ctry_name"));
+				 
 				 list.add(imp);
 			 }
 			 userSearchResponse.setImpForeignList(list);
