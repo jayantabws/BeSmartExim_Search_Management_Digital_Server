@@ -2046,21 +2046,6 @@ public class UserSearchService {
 		return searchDetailsResponse;
 	}
 	
-	
-//	public long countByCreatedBy(Long createdBy) {
-//		return this.userSearchRepository.countByCreatedBy(createdBy);
-//	}
-//	
-//	public long countByCreatedByAndIsDownloaded(Long createdBy, String isDownloaded) {
-//		return this.userSearchRepository.countByCreatedByAndIsDownloaded(createdBy, isDownloaded);
-//	}
-//	
-//	public long countByIsDownloaded(String isDownloaded) {
-//		return this.userSearchRepository.countByIsDownloaded(isDownloaded);
-//	}
-//	
-//	public long countAll() {
-//		return this.userSearchRepository.count();
-//	}
+
 
 }
