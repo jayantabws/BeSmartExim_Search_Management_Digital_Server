@@ -1,6 +1,7 @@
 package com.besmartexim.util;
 
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -136,5 +137,7 @@ public class QueryUtil {
 		System.out.println(jsonNode.get("countryCode"));
 		String country = jsonNode.get("countryCode").toString();
 		System.out.println("String =>"+country);
+		
+		System.out.println(LocalDateTime.now());
 	}
 }
