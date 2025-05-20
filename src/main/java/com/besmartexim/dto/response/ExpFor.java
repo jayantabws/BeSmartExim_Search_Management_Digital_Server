@@ -112,6 +112,8 @@ public class ExpFor {
 	private String ctry_code;
 	private String ctry_name;
 	
+	private String std_unit_rate_usd;
+	private String draw_back;
 	
 	
 	public Long getId() {
@@ -755,6 +757,18 @@ public class ExpFor {
 	}
 	public void setCtry_name(String ctry_name) {
 		this.ctry_name = ctry_name;
+	}
+	public String getStd_unit_rate_usd() {
+		return std_unit_rate_usd;
+	}
+	public void setStd_unit_rate_usd(String std_unit_rate_usd) {
+		this.std_unit_rate_usd = std_unit_rate_usd;
+	}
+	public String getDraw_back() {
+		return draw_back;
+	}
+	public void setDraw_back(String draw_back) {
+		this.draw_back = draw_back;
 	}
 	
 	

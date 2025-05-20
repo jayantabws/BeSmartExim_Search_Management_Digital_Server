@@ -131,6 +131,8 @@ public class ImpFor {
 	private String ctry_code;
 	private String ctry_name;
 	
+	private String std_unit_rate_usd;
+	
 	public Long getId() {
 		return id;
 	}
@@ -886,6 +888,12 @@ public class ImpFor {
 	}
 	public void setCtry_name(String ctry_name) {
 		this.ctry_name = ctry_name;
+	}
+	public String getStd_unit_rate_usd() {
+		return std_unit_rate_usd;
+	}
+	public void setStd_unit_rate_usd(String std_unit_rate_usd) {
+		this.std_unit_rate_usd = std_unit_rate_usd;
 	}
 	
 	
