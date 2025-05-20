@@ -1165,12 +1165,12 @@ public class UserSearchService {
 
 			String proeName = null;
 
-			if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("IND"))
-				proeName = QueryConstant.listMonthwiseBySearchProcedure;
-			else if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("SEZ"))
-				proeName = QueryConstant.listMonthwiseBySearchProcedureSEZ;
-			else
-				proeName = QueryConstant.listMonthwiseBySearchProcedure;
+//			if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("IND"))
+//				proeName = QueryConstant.listMonthwiseBySearchProcedure;
+//			else if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("SEZ"))
+//				proeName = QueryConstant.listMonthwiseBySearchProcedureSEZ;
+//			else
+//				proeName = QueryConstant.listMonthwiseBySearchProcedure;
 			
 			proeName = QueryConstant.listMonthwiseBySearchProcedureAllCountries;
 
