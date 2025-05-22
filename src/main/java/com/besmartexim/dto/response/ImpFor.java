@@ -59,7 +59,7 @@ public class ImpFor {
 	private String declaration_type;
 	private String menifest_no;
 	private String menifest_date;
-	private String incoterms;
+	private String incoterm;
 	private String vat_preference;
 	private String mode_of_transport;
 	private String No_of_package;
@@ -475,11 +475,11 @@ public class ImpFor {
 	public void setMenifest_date(String menifest_date) {
 		this.menifest_date = menifest_date;
 	}
-	public String getIncoterms() {
-		return incoterms;
+	public String getIncoterm() {
+		return incoterm;
 	}
-	public void setIncoterms(String incoterms) {
-		this.incoterms = incoterms;
+	public void setIncoterm(String incoterm) {
+		this.incoterm = incoterm;
 	}
 	public String getVat_preference() {
 		return vat_preference;

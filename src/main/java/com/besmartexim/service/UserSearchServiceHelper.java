@@ -240,7 +240,7 @@ public class UserSearchServiceHelper {
 				 imp.setImporter_phone(rs.getString("importer_phone"));
 				 imp.setIncome_tax_amount((rs.getString("income_tax_amount") != null) ? rs.getBigDecimal("income_tax_amount").toPlainString() : null);
 				 imp.setIncome_tax_mod(rs.getString("income_tax_mod"));
-				 imp.setIncoterms(rs.getString("incoterms"));
+				 imp.setIncoterm(rs.getString("incoterms"));
 				 imp.setInsurance_value_botswanan_pula((rs.getString("insurance_value_botswanan_pula") != null) ? rs.getBigDecimal("insurance_value_botswanan_pula").toPlainString() : null);
 				 imp.setInsurance_value_usd((rs.getString("insurance_value_usd") != null) ? rs.getBigDecimal("insurance_value_usd").toPlainString() : null);
 				 imp.setItem_no(rs.getString("item_no"));
