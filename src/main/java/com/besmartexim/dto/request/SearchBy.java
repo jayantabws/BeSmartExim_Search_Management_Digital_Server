@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 public enum SearchBy implements Serializable{
     HS_CODE,
+    HS_CODE_2,
     PRODUCT,
     IMPORTER,
     EXPORTER;
