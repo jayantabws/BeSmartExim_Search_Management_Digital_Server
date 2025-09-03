@@ -52,6 +52,9 @@ public class UserSearchController {
 	public ResponseEntity<?> search(@RequestBody @Valid UserSearchRequest userSearchRequest, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
 		logger.info("Request : /search-management/search");
 		//mstContinentService.continentCreate(mstContinentRequest, accessedBy);
+		if("incoterm".equalsIgnoreCase(userSearchRequest.getOrderByColumn()) && "IMPORT".equalsIgnoreCase(userSearchRequest.getTradeType().getValue())) {
+			userSearchRequest.setOrderByColumn("incoterms");
+		}
 		UserSearchResponse userSearchResponse= userSearchService.search(userSearchRequest,accessedBy);
 		
 		//System.out.println(userSearchRequest);
@@ -280,6 +283,10 @@ public class UserSearchController {
 	public ResponseEntity<?> listdistinctcolumnvalue(@RequestBody  UserSearchRequest userSearchRequest, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
 		logger.info("Request : /search-management/listdistinctcolumnvalue");
 		
+		if("incoterm".equalsIgnoreCase(userSearchRequest.getColumnName()) && "IMPORT".equalsIgnoreCase(userSearchRequest.getTradeType().getValue())) {
+			userSearchRequest.setColumnName("incoterms");
+		}
+		
 		ListDistinctColumnValuesResponse listDistinctColumnValuesResponse = userSearchService.listdistinctcolumnvalue(userSearchRequest, accessedBy);
 		
 		//System.out.println(userSearchRequest);
@@ -288,4 +295,23 @@ public class UserSearchController {
 	}
 	
 	
+	@RequestMapping(value = "/search/listAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity allQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,@RequestParam (required=true) String searchValue, @RequestParam (defaultValue = "0") int page, @RequestParam (defaultValue = "10") int size, @RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
+			
+		logger.info("Request : /search-management/listAllnew");
+		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId,uplineId,isDownloaded,accessedBy,searchValue, PageRequest.of(page, size));
+		
+		return new ResponseEntity<>(searchDetailsResponse, HttpStatus.OK);
+		
+	}
+	
+	@RequestMapping(value = "/search/countAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity countAllQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,@RequestParam (required=true) String searchValue, @RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
+			
+		logger.info("Request : /search-management/countAllnew");
+		long count = userSearchService.countAllQueriesNew(userId,uplineId,isDownloaded,searchValue,accessedBy);
+		
+		return new ResponseEntity<>(count, HttpStatus.OK);
+		
+	}
 }

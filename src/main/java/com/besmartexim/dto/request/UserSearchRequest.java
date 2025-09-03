@@ -1,10 +1,7 @@
 package com.besmartexim.dto.request;
 
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 
 public class UserSearchRequest {
@@ -68,19 +65,19 @@ public class UserSearchRequest {
 	private List<String> stdUnitList;
 	
 	
-	private Integer rangeQuantityStart;
+	private String rangeQuantityStart;
 	
-	private Integer rangeQuantityEnd;
+	private String rangeQuantityEnd;
 	
 	private List<String> consumptionType;
 	
-	private Integer rangeValueUsdStart;
+	private String rangeValueUsdStart;
 	
-	private Integer rangeValueUsdEnd;
+	private String rangeValueUsdEnd;
 	
-	private Integer rangeUnitPriceUsdStart;
+	private String rangeUnitPriceUsdStart;
 	
-	private Integer rangeUnitPriceUsdEnd;
+	private String rangeUnitPriceUsdEnd;
 	
 	private List<String> incoterm;
 	
@@ -291,19 +288,19 @@ public class UserSearchRequest {
 		this.stdUnitList = stdUnitList;
 	}
 
-	public Integer getRangeQuantityStart() {
+	public String getRangeQuantityStart() {
 		return rangeQuantityStart;
 	}
 
-	public void setRangeQuantityStart(Integer rangeQuantityStart) {
+	public void setRangeQuantityStart(String rangeQuantityStart) {
 		this.rangeQuantityStart = rangeQuantityStart;
 	}
 
-	public Integer getRangeQuantityEnd() {
+	public String getRangeQuantityEnd() {
 		return rangeQuantityEnd;
 	}
 
-	public void setRangeQuantityEnd(Integer rangeQuantityEnd) {
+	public void setRangeQuantityEnd(String rangeQuantityEnd) {
 		this.rangeQuantityEnd = rangeQuantityEnd;
 	}
 
@@ -315,35 +312,35 @@ public class UserSearchRequest {
 		this.consumptionType = consumptionType;
 	}
 
-	public Integer getRangeValueUsdStart() {
+	public String getRangeValueUsdStart() {
 		return rangeValueUsdStart;
 	}
 
-	public void setRangeValueUsdStart(Integer rangeValueUsdStart) {
+	public void setRangeValueUsdStart(String rangeValueUsdStart) {
 		this.rangeValueUsdStart = rangeValueUsdStart;
 	}
 
-	public Integer getRangeValueUsdEnd() {
+	public String getRangeValueUsdEnd() {
 		return rangeValueUsdEnd;
 	}
 
-	public void setRangeValueUsdEnd(Integer rangeValueUsdEnd) {
+	public void setRangeValueUsdEnd(String rangeValueUsdEnd) {
 		this.rangeValueUsdEnd = rangeValueUsdEnd;
 	}
 
-	public Integer getRangeUnitPriceUsdStart() {
+	public String getRangeUnitPriceUsdStart() {
 		return rangeUnitPriceUsdStart;
 	}
 
-	public void setRangeUnitPriceUsdStart(Integer rangeUnitPriceUsdStart) {
+	public void setRangeUnitPriceUsdStart(String rangeUnitPriceUsdStart) {
 		this.rangeUnitPriceUsdStart = rangeUnitPriceUsdStart;
 	}
 
-	public Integer getRangeUnitPriceUsdEnd() {
+	public String getRangeUnitPriceUsdEnd() {
 		return rangeUnitPriceUsdEnd;
 	}
 
-	public void setRangeUnitPriceUsdEnd(Integer rangeUnitPriceUsdEnd) {
+	public void setRangeUnitPriceUsdEnd(String rangeUnitPriceUsdEnd) {
 		this.rangeUnitPriceUsdEnd = rangeUnitPriceUsdEnd;
 	}
 
