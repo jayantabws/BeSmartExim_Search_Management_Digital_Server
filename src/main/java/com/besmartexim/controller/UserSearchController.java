@@ -314,4 +314,13 @@ public class UserSearchController {
 		return new ResponseEntity<>(count, HttpStatus.OK);
 		
 	}
+	
+	@RequestMapping(value = "/getvalue", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getTotalValue(@RequestBody @Valid UserSearchRequest userSearchRequest, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+		logger.info("Request : /search-management/getTotalValue");
+		
+		Long total_value= userSearchService.getValue(userSearchRequest,accessedBy);
+		
+		return new ResponseEntity<>(total_value, HttpStatus.OK);
+	}
 }
