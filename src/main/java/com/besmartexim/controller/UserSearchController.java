@@ -321,11 +321,6 @@ public class UserSearchController {
 	public ResponseEntity<?> getTotalValue(@RequestBody @Valid UserSearchRequest userSearchRequest, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
 		logger.info("Request : /search-management/getTotalValue");
 		
-		if(userSearchRequest.getTradeType().getValue().equalsIgnoreCase("IMPORT")) {
-			userSearchRequest.setPortOriginList(userSearchRequest.getPortDestinationList());
-			userSearchRequest.setPortDestinationList(new ArrayList<String>());
-		}
-		
 		Long total_value= userSearchService.getValue(userSearchRequest,accessedBy);
 		
 		return new ResponseEntity<>(total_value, HttpStatus.OK);
@@ -333,14 +328,23 @@ public class UserSearchController {
 	
 	
 	@RequestMapping(value = "/searchdepth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> searchForInDepth(@RequestBody @Valid UserSearchRequest userSearchRequest, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+	public ResponseEntity<?> searchForInDepth(@RequestBody @Valid UserSearchRequest userSearchRequest,
+			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
 		logger.info("Request : /search-management/searchdepth");
-		
-		if("incoterm".equalsIgnoreCase(userSearchRequest.getOrderByColumn()) && "IMPORT".equalsIgnoreCase(userSearchRequest.getTradeType().getValue())) {
+
+		if (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId().equals("")
+				|| userSearchRequest.getSearchId() == 0) {
+			logger.error("=========================== Invalid Search ID, Please Check =========================================");
+			return new ResponseEntity<>("Invalid Search ID, Please Check", HttpStatus.BAD_REQUEST);
+		}
+
+		if ("incoterm".equalsIgnoreCase(userSearchRequest.getOrderByColumn())
+				&& "IMPORT".equalsIgnoreCase(userSearchRequest.getTradeType().getValue())) {
 			userSearchRequest.setOrderByColumn("incoterms");
 		}
-		UserSearchResponse userSearchResponse= userSearchService.searchInDepth(userSearchRequest,accessedBy);
 		
+		UserSearchResponse userSearchResponse = userSearchService.searchInDepth(userSearchRequest, accessedBy);
+
 		return new ResponseEntity<>(userSearchResponse, HttpStatus.OK);
 	}
 }
