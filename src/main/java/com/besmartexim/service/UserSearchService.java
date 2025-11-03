@@ -2144,19 +2144,19 @@ public class UserSearchService {
 	
 	
 	private SearchDetailsResponse convertCountryToList(SearchDetailsResponse searchDetailsResponse) {
-		
-					// Converting Country from String to List<String>
-		if(searchDetailsResponse.getQueryList().size() > 0) {
-			
+
+		// Converting Country from String to List<String>
+		if (searchDetailsResponse.getQueryList().size() > 0) {
+
 			Object countryCode = searchDetailsResponse.getQueryList().get(0).getUserSearchQuery().getCountryCode();
-			
-			if(countryCode instanceof String){
+
+			if (countryCode instanceof String) {
 				ArrayList<String> list = new ArrayList<String>();
 				list.add((String) countryCode);
 				searchDetailsResponse.getQueryList().get(0).getUserSearchQuery().setCountryCode(list);
-			} 
+			}
 		}
-		
+
 		return searchDetailsResponse;
 	}
 	
