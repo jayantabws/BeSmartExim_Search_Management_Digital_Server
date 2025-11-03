@@ -299,10 +299,10 @@ public class UserSearchController {
 	
 	
 	@RequestMapping(value = "/search/listAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity allQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,@RequestParam (required=false) String searchValue, @RequestParam (defaultValue = "1") int page, @RequestParam (defaultValue = "20") int size, @RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
+	public ResponseEntity allQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,@RequestParam (required=false) String searchValue, @RequestParam (defaultValue = "0") int pageNumber, @RequestParam (defaultValue = "20") int pageSize, @RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
 			
 		logger.info("Request : /search-management/listAllnew");
-		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId,uplineId,isDownloaded,accessedBy,searchValue, PageRequest.of(page, size, Sort.by("CreatedDate").descending()));
+		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId,uplineId,isDownloaded,accessedBy,searchValue, PageRequest.of(pageNumber, pageSize));
 		
 		return new ResponseEntity<>(searchDetailsResponse, HttpStatus.OK);
 		
@@ -311,6 +311,7 @@ public class UserSearchController {
 	@RequestMapping(value = "/search/countAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity countAllQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,@RequestParam (required=false) String searchValue, @RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
 			
+		logger.info("Request : /search-management/countAllnew");
 		long count = userSearchService.countAllQueriesNew(userId,uplineId,isDownloaded,searchValue,accessedBy);
 		
 		return new ResponseEntity<>(count, HttpStatus.OK);
