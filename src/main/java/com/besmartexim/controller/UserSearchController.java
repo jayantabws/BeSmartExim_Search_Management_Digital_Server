@@ -313,7 +313,8 @@ public class UserSearchController {
 			fd = new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);
 		}
 		if(toDate != null && toDate != "") {
-			td = new SimpleDateFormat("yyyy-MM-dd").parse(toDate);
+			toDate = toDate + " 23:59:59.999";
+			td = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(toDate);
 		}
 		if(td == null && fd != null) {
 			td = new Date();
@@ -338,7 +339,8 @@ public class UserSearchController {
 			fd = new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);
 		}
 		if(toDate != null && toDate != "") {
-			td = new SimpleDateFormat("yyyy-MM-dd").parse(toDate);
+			toDate = toDate + " 23:59:59.999";
+			td = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").parse(toDate);
 		}
 		if(td == null && fd != null) {
 			td = new Date();
