@@ -2161,60 +2161,131 @@ public class UserSearchService {
 	}
 	
 	
-	public SearchDetailsResponse listAllQueriesNew(Long userId, Long uplineId, String isDownloaded, Long accessedBy, String searchValue, Pageable pageable)
+	public SearchDetailsResponse listAllQueriesNew(Long userId, Long uplineId, String isDownloaded, Long accessedBy, String searchValue, Pageable pageable, Date fromDate, Date toDate)
 			throws Exception {
 
 		SearchDetailsResponse searchDetailsResponse = new SearchDetailsResponse();
 		List<SearchDetails> list = new ArrayList<SearchDetails>();
 		SearchDetails searchDetails = null;
 		List<UserSearch> userSearchList = null;
-		if(pageable.getPageNumber() >0)
-			pageable = PageRequest.of(pageable.getPageNumber()-1, pageable.getPageSize(), Sort.by("createdDate").descending());
-		
-		if(searchValue != null  && searchValue != "")
-			searchValue = "%\"searchValue\"%"+searchValue+"%";
+
+		if (pageable.getPageNumber() > 0)
+			pageable = PageRequest.of(pageable.getPageNumber() - 1, pageable.getPageSize(),
+					Sort.by("createdDate").descending());
+
+		if (searchValue != null && searchValue != "")
+			searchValue = "%\"searchValue\"%" + searchValue + "%";
 
 		if (userId != null) {
 			if (isDownloaded != null && isDownloaded != "") {
-				if(searchValue != null && searchValue != "")
-					userSearchList = userSearchRepository.customByUserIdAndIsDownloadAndSearchValue(userId,isDownloaded,searchValue, pageable.getPageNumber(), pageable.getPageSize()); // Q1
-				else
-					userSearchList = userSearchRepository.findByCreatedByAndIsDownloaded(userId,isDownloaded, pageable).getContent();
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.customByUserIdAndIsDownloadAndSearchValueAndDateRange(
+								userId, isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize(),
+								fromDate, toDate); // D1
+					else
+						userSearchList = userSearchRepository.customByUserIdAndIsDownloadAndSearchValue(userId,
+								isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize()); // Q1
+				} else {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.findByCreatedByAndIsDownloadedAndDateRange(userId,
+								isDownloaded, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D2
+					else
+						userSearchList = userSearchRepository
+								.findByCreatedByAndIsDownloaded(userId, isDownloaded, pageable).getContent();
+				}
+
+			} else {
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.customByUserIdAndSearchValueAndDateRange(userId,
+								searchValue, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D3
+					else
+						userSearchList = userSearchRepository.customByUserIdAndSearchValue(userId, searchValue,
+								pageable.getPageNumber(), pageable.getPageSize()); // Q2
+				} else {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.customByCreatedByAndDateRange(userId,
+								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);// D4
+					else
+						userSearchList = userSearchRepository.findByCreatedBy(userId, pageable).getContent();
+				}
+
 			}
-			else {
-				if(searchValue != null && searchValue != "")
-					userSearchList = userSearchRepository.customByUserIdAndSearchValue(userId,searchValue, pageable.getPageNumber(), pageable.getPageSize()); //Q2
-				else
-					userSearchList = userSearchRepository.findByCreatedBy(userId, pageable).getContent();
-			}
-				
+
 		} else if (uplineId != null) {
 			if (isDownloaded != null && isDownloaded != "") {
-				if(searchValue != null && searchValue != "")
-					userSearchList = userSearchRepository.customByUplineIdAndIsDownloadAndSearchValue(uplineId,isDownloaded,searchValue, pageable.getPageNumber(), pageable.getPageSize());// Q3
-				else
-					userSearchList = userSearchRepository.findByUplineIdAndIsDownloadedOrderByCreatedDateDesc(uplineId,isDownloaded, pageable.getPageNumber(), pageable.getPageSize());
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.customByUplineIdAndIsDownloadAndSearchValueAndDateRange(
+								uplineId, isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize(),
+								fromDate, toDate);// D5
+					else
+						userSearchList = userSearchRepository.customByUplineIdAndIsDownloadAndSearchValue(uplineId,
+								isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize());// Q3
+				}
+
+				else {
+					if (fromDate != null)
+						userSearchList = userSearchRepository
+								.findByUplineIdAndIsDownloadedAndDateRangeOrderByCreatedDateDesc(uplineId, isDownloaded,
+										pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D6
+					else
+						userSearchList = userSearchRepository.findByUplineIdAndIsDownloadedOrderByCreatedDateDesc(
+								uplineId, isDownloaded, pageable.getPageNumber(), pageable.getPageSize());
+				}
+
+			} else {
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.customByUplineIdAndSearchValueAndDateRange(uplineId,
+								searchValue, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D7
+					else
+						userSearchList = userSearchRepository.customByUplineIdAndSearchValue(uplineId, searchValue,
+								pageable.getPageNumber(), pageable.getPageSize()); // Q4
+				} else {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.findByUplineIdAndDateRangeOrderByCreatedDateDesc(uplineId,
+								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);// D8
+					else
+						userSearchList = userSearchRepository.findByUplineIdOrderByCreatedDateDesc(uplineId,
+								pageable.getPageNumber(), pageable.getPageSize());
+				}
 			}
-			else {
-				if(searchValue != null && searchValue != "")
-					userSearchList = userSearchRepository.customByUplineIdAndSearchValue(uplineId,searchValue, pageable.getPageNumber(), pageable.getPageSize()); //Q4
-				else
-					userSearchList = userSearchRepository.findByUplineIdOrderByCreatedDateDesc(uplineId, pageable.getPageNumber(), pageable.getPageSize());
-			}
-				
+
 		} else {
 			if (isDownloaded != null && isDownloaded != "") {
-				if(searchValue != null && searchValue != "")
-					userSearchList = userSearchRepository.customByIsDownloadedAndSearchValue(isDownloaded,searchValue, pageable.getPageNumber(), pageable.getPageSize());//Q5
-				else
-					userSearchList = userSearchRepository.findByIsDownloaded(isDownloaded, pageable).getContent();
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.customByIsDownloadedAndSearchValueAndDateRange(
+								isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize(), fromDate,
+								toDate);// D9
+					else
+						userSearchList = userSearchRepository.customByIsDownloadedAndSearchValue(isDownloaded,
+								searchValue, pageable.getPageNumber(), pageable.getPageSize());// Q5
+				} else {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.findByIsDownloadedAndDateRange(isDownloaded,
+								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);// D10
+					else
+						userSearchList = userSearchRepository.findByIsDownloaded(isDownloaded, pageable).getContent();
+				}
+			} else {
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.customBySearchValueAndDateRange(searchValue,
+								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D11
+					else
+						userSearchList = userSearchRepository.customBySearchValue(searchValue, pageable.getPageNumber(),
+								pageable.getPageSize()); // Q6
+				} else {
+					if (fromDate != null)
+						userSearchList = userSearchRepository.findAllByDateRange(pageable.getPageNumber(),
+								pageable.getPageSize(), fromDate, toDate);// D12
+					else
+						userSearchList = userSearchRepository.findAll(pageable).getContent();
+				}
 			}
-			else {
-				if(searchValue != null && searchValue != "")
-					userSearchList = userSearchRepository.customBySearchValue(searchValue, pageable.getPageNumber(), pageable.getPageSize()); //Q6
-				else
-					userSearchList = userSearchRepository.findAll(pageable).getContent();
-			}	
 		}
 
 		// Fetch user management Data From User Data
@@ -2232,13 +2303,10 @@ public class UserSearchService {
 			searchDetails.setCreatedBy(userSearch.getCreatedBy());
 			searchDetails
 					.setUserSearchQuery(objectMapper.readValue(userSearch.getSearchJson(), UserSearchRequest.class));
-			
-			
-			
+
 			User userEntity = userRepository.findById(userSearch.getCreatedBy()).orElse(null);
-			
-			if(userEntity != null )
-			{
+
+			if (userEntity != null) {
 				searchDetails.setCreatedByName(userEntity.getFirstname() + " " + userEntity.getLastname());
 				searchDetails.setCreatedByEmail(userEntity.getEmail());
 			}
@@ -2248,18 +2316,16 @@ public class UserSearchService {
 			searchDetails.setDownloadedBy(userSearch.getDownloadedBy());
 
 			if (userSearch.getDownloadedBy() != null) {
-				
+
 				userEntity = userRepository.findById(userSearch.getDownloadedBy()).orElse(null);
-				
-				if(userEntity != null )
-				{
-					searchDetails.setDownloadedByName(
-							userEntity.getFirstname() + " " + userEntity.getLastname());
+
+				if (userEntity != null) {
+					searchDetails.setDownloadedByName(userEntity.getFirstname() + " " + userEntity.getLastname());
 					searchDetails.setDownloadedByEmail(userEntity.getEmail());
 				}
-				
+
 			}
-			
+
 			searchDetails.setRecordsDownloaded(userSearch.getRecordsDownloaded());
 
 			list.add(searchDetails);
@@ -2267,63 +2333,110 @@ public class UserSearchService {
 
 		searchDetailsResponse.setQueryList(list);
 		searchDetailsResponse = convertCountryToList(searchDetailsResponse);
-		
+
 		return searchDetailsResponse;
 	}
 	
 	
-	public long countAllQueriesNew(Long userId, Long uplineId, String isDownloaded, String searchValue, Long accessedBy)
+	public long countAllQueriesNew(Long userId, Long uplineId, String isDownloaded, String searchValue, Long accessedBy, Date fromDate, Date toDate)
 			throws Exception {
-		
-		
-		
+
 		long count = 0l;
-		if(searchValue != null  && searchValue != "")
-			searchValue = "%\"searchValue\"%"+searchValue+"%";
+		if (searchValue != null && searchValue != "")
+			searchValue = "%\"searchValue\"%" + searchValue + "%";
 
 		if (userId != null) {
 			if (isDownloaded != null && isDownloaded != "") {
-				if(searchValue != null && searchValue != "")
-					count = userSearchRepository.customCountByUserIdAndIsDownloadAndSearchValue(userId, isDownloaded, searchValue);
-				else
-					count = userSearchRepository.countByCreatedByAndIsDownloaded(userId, isDownloaded);
-			}
-			else {
-				if(searchValue != null && searchValue != "")
-					count = userSearchRepository.customCountByUserIdAndSearchValue(userId, searchValue);
-				else
-					count = userSearchRepository.countByCreatedBy(userId);
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						count = userSearchRepository.customCountByUserIdAndIsDownloadAndSearchValueAndDateRange(userId,
+								isDownloaded, searchValue, fromDate, toDate); // DC1
+					else
+						count = userSearchRepository.customCountByUserIdAndIsDownloadAndSearchValue(userId,
+								isDownloaded, searchValue);
+				} else {
+					if (fromDate != null)
+						count = userSearchRepository.countByCreatedByAndIsDownloadedAndDateRange(userId, isDownloaded,
+								fromDate, toDate); // DC2
+					else
+						count = userSearchRepository.countByCreatedByAndIsDownloaded(userId, isDownloaded);
+				}
+			} else {
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						count = userSearchRepository.customCountByUserIdAndSearchValueAndDateRange(userId, searchValue,
+								fromDate, toDate); // DC3
+					else
+						count = userSearchRepository.customCountByUserIdAndSearchValue(userId, searchValue);
+				} else {
+					if (fromDate != null)
+						count = userSearchRepository.countByCreatedByAndDateRnage(userId, fromDate, toDate); // DC4
+					else
+						count = userSearchRepository.countByCreatedBy(userId);
+				}
 			}
 		} else if (uplineId != null) {
 			if (isDownloaded != null && isDownloaded != "") {
-				if(searchValue != null && searchValue != "")
-					count = userSearchRepository.customCountByUplineIdAndIsDownloadAndSearchValue(uplineId, isDownloaded, searchValue);
-				else
-					count = userSearchRepository.countByUplineIdAndIsDownloaded(uplineId, isDownloaded);
-			}
-			else {
-				if(searchValue != null && searchValue != "")
-					count = userSearchRepository.customCountByUplineIdAndSearchValue(uplineId, searchValue);
-				else
-					count = userSearchRepository.countByUplineId(uplineId);
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						count = userSearchRepository.customCountByUplineIdAndIsDownloadAndSearchValueAndDateRange(
+								uplineId, isDownloaded, searchValue, fromDate, toDate);// DC5
+					else
+						count = userSearchRepository.customCountByUplineIdAndIsDownloadAndSearchValue(uplineId,
+								isDownloaded, searchValue);
+				} else {
+					if (fromDate != null)
+						count = userSearchRepository.countByUplineIdAndIsDownloadedAndDateRange(uplineId, isDownloaded,
+								fromDate, toDate);// DC6
+					else
+						count = userSearchRepository.countByUplineIdAndIsDownloaded(uplineId, isDownloaded);
+				}
+			} else {
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						count = userSearchRepository.customCountByUplineIdAndSearchValueAndDateRange(uplineId,
+								searchValue, fromDate, toDate);// DC7
+					else
+						count = userSearchRepository.customCountByUplineIdAndSearchValue(uplineId, searchValue);
+				} else {
+					if (fromDate != null)
+						count = userSearchRepository.countByUplineIdAndDateRange(uplineId, fromDate, toDate);// DC8
+					else
+						count = userSearchRepository.countByUplineId(uplineId);
+				}
 			}
 		} else {
 			if (isDownloaded != null && isDownloaded != "") {
-				if(searchValue != null && searchValue != "")
-					count = userSearchRepository.customCountByIsDownloadedAndSearchValue(isDownloaded, searchValue);
-				else
-					count = userSearchRepository.countByIsDownloaded(isDownloaded);
-			}
-			else {
-				if(searchValue != null && searchValue != "")
-					count = userSearchRepository.customCountBySearchValue(searchValue);
-				else
-					count = userSearchRepository.count();
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						count = userSearchRepository.customCountByIsDownloadedAndSearchValueAndDateRange(isDownloaded,
+								searchValue, fromDate, toDate);// DC9
+					else
+						count = userSearchRepository.customCountByIsDownloadedAndSearchValue(isDownloaded, searchValue);
+				} else {
+					if (fromDate != null)
+						count = userSearchRepository.countByIsDownloadedAndDateRange(isDownloaded, fromDate, toDate);// DC10
+					else
+						count = userSearchRepository.countByIsDownloaded(isDownloaded);
+				}
+			} else {
+				if (searchValue != null && searchValue != "") {
+					if (fromDate != null)
+						count = userSearchRepository.customCountBySearchValueAndDateRange(searchValue, fromDate,
+								toDate);// DC11
+					else
+						count = userSearchRepository.customCountBySearchValue(searchValue);
+				} else {
+					if (fromDate != null)
+						count = userSearchRepository.countByDateRange(fromDate, toDate);// DC12
+					else
+						count = userSearchRepository.count();
+				}
 			}
 		}
-		
+
 		return count;
-	
+
 	}
 	
 	

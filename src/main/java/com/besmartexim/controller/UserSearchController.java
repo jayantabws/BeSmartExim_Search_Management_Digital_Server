@@ -1,7 +1,9 @@
 package com.besmartexim.controller;
 
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import javax.validation.Valid;
 
@@ -299,20 +301,50 @@ public class UserSearchController {
 	
 	
 	@RequestMapping(value = "/search/listAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity allQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,@RequestParam (required=false) String searchValue, @RequestParam (defaultValue = "0") int pageNumber, @RequestParam (defaultValue = "20") int pageSize, @RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
+	public ResponseEntity allQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,
+			@RequestParam (required=false) String searchValue, @RequestParam (defaultValue = "0") int pageNumber, @RequestParam (defaultValue = "20") int pageSize, 
+			@RequestParam (required=false) String fromDate, @RequestParam (required=false) String toDate,@RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
 			
 		logger.info("Request : /search-management/listAllnew");
-		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId,uplineId,isDownloaded,accessedBy,searchValue, PageRequest.of(pageNumber, pageSize));
+		
+		Date fd = null, td = null;
+		
+		if(fromDate != null && fromDate != "") {
+			fd = new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);
+		}
+		if(toDate != null && toDate != "") {
+			td = new SimpleDateFormat("yyyy-MM-dd").parse(toDate);
+		}
+		if(td == null && fd != null) {
+			td = new Date();
+		}
+		
+		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId,uplineId,isDownloaded,accessedBy,searchValue, PageRequest.of(pageNumber, pageSize),fd, td);
 		
 		return new ResponseEntity<>(searchDetailsResponse, HttpStatus.OK);
 		
 	}
 	
 	@RequestMapping(value = "/search/countAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity countAllQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,@RequestParam (required=false) String searchValue, @RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
+	public ResponseEntity countAllQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,
+			@RequestParam (required=false) String searchValue, @RequestParam (required=false) String fromDate, @RequestParam (required=false) String toDate,
+			@RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
 			
 		logger.info("Request : /search-management/countAllnew");
-		long count = userSearchService.countAllQueriesNew(userId,uplineId,isDownloaded,searchValue,accessedBy);
+		
+		Date fd = null, td = null;
+		
+		if(fromDate != null && fromDate != "") {
+			fd = new SimpleDateFormat("yyyy-MM-dd").parse(fromDate);
+		}
+		if(toDate != null && toDate != "") {
+			td = new SimpleDateFormat("yyyy-MM-dd").parse(toDate);
+		}
+		if(td == null && fd != null) {
+			td = new Date();
+		}
+		
+		long count = userSearchService.countAllQueriesNew(userId,uplineId,isDownloaded,searchValue,accessedBy,fd, td);
 		
 		return new ResponseEntity<>(count, HttpStatus.OK);
 		
