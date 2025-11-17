@@ -40,7 +40,7 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 
 	Page<UserSearch> findByIsDownloaded(String isDownloaded, Pageable pageable);
 
-	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) order by created_date desc offset :page rows fetch next :size rows only ")
+	@Query(nativeQuery = true, value = "SELECT * FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) order by created_date desc offset :page rows fetch next :size rows only ")
 	List<UserSearch> findByUplineIdOrderByCreatedDateDesc(Long uplineId, int page, int size);
 
 	@Query(nativeQuery = true, value = "SELECT * FROM user_search where is_downloaded = :isDownloaded and (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) order by created_date desc offset :page rows fetch next :size rows only")
@@ -70,11 +70,11 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by = :userId and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only") // Q2
 	List<UserSearch> customByUserIdAndSearchValue(Long userId, String searchValue, int page, int size);
 
-	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and is_downloaded = :isDownloaded and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only") // Q3
+	@Query(nativeQuery = true, value = "SELECT * FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and is_downloaded = :isDownloaded and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only") // Q3
 	List<UserSearch> customByUplineIdAndIsDownloadAndSearchValue(Long uplineId, String isDownloaded, String searchValue,
 			int page, int size);
 
-	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only") // Q4
+	@Query(nativeQuery = true, value = "SELECT * FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only") // Q4
 	List<UserSearch> customByUplineIdAndSearchValue(Long uplineId, String searchValue, int page, int size);
 
 	@Query(nativeQuery = true, value = "SELECT * FROM user_search where is_downloaded = :isDownloaded and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only") // Q5
@@ -89,10 +89,10 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_by = :userId and search_json like :searchValue") // Q2
 	long customCountByUserIdAndSearchValue(Long userId, String searchValue);
 
-	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and is_downloaded = :isDownloaded and search_json like :searchValue") // Q3
+	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and is_downloaded = :isDownloaded and search_json like :searchValue") // Q3
 	long customCountByUplineIdAndIsDownloadAndSearchValue(Long uplineId, String isDownloaded, String searchValue);
 
-	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and search_json like :searchValue ") // Q4
+	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and search_json like :searchValue ") // Q4
 	long customCountByUplineIdAndSearchValue(Long uplineId, String searchValue);
 
 	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where is_downloaded = :isDownloaded and search_json like :searchValue ") // Q5
@@ -120,7 +120,7 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 	List<UserSearch> customByCreatedByAndDateRange(Long userId, int page, int size, Date fromDate, Date toDate);//D4
 	
 	
-	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and is_downloaded = :isDownloaded and created_date between :fromDate and :toDate and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only")
+	@Query(nativeQuery = true, value = "SELECT * FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and is_downloaded = :isDownloaded and created_date between :fromDate and :toDate and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only")
 	List<UserSearch> customByUplineIdAndIsDownloadAndSearchValueAndDateRange(Long uplineId, String isDownloaded, String searchValue,
 			int page, int size, Date fromDate, Date toDate);//D5
 
@@ -130,11 +130,11 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 			int size, Date fromDate, Date toDate);//D6
 	
 	
-	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and created_date between :fromDate and :toDate and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only")
+	@Query(nativeQuery = true, value = "SELECT * FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and created_date between :fromDate and :toDate and search_json like :searchValue order by created_date desc offset :page rows fetch next :size rows only")
 	List<UserSearch> customByUplineIdAndSearchValueAndDateRange(Long uplineId, String searchValue, int page, int size, Date fromDate, Date toDate);//D7
 	
 	
-	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and created_date between :fromDate and :toDate order by created_date desc offset :page rows fetch next :size rows only ")
+	@Query(nativeQuery = true, value = "SELECT * FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and created_date between :fromDate and :toDate order by created_date desc offset :page rows fetch next :size rows only ")
 	List<UserSearch> findByUplineIdAndDateRangeOrderByCreatedDateDesc(Long uplineId, int page, int size, Date fromDate, Date toDate);//D8
 	
 	
@@ -171,7 +171,7 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 	long countByCreatedByAndDateRnage(Long createdBy, Date fromDate, Date toDate);//DC4
 	
 	
-	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and is_downloaded = :isDownloaded and created_date between :fromDate and :toDate and search_json like :searchValue")
+	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and is_downloaded = :isDownloaded and created_date between :fromDate and :toDate and search_json like :searchValue")
 	long customCountByUplineIdAndIsDownloadAndSearchValueAndDateRange(Long uplineId, String isDownloaded, String searchValue, Date fromDate, Date toDate);//DC5
 	
 	
@@ -179,11 +179,11 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 	long countByUplineIdAndIsDownloadedAndDateRange(Long uplineId, String isDownloaded, Date fromDate, Date toDate);//DC6
 	
 	
-	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and created_date between :fromDate and :toDate and search_json like :searchValue ")
+	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and created_date between :fromDate and :toDate and search_json like :searchValue ")
 	long customCountByUplineIdAndSearchValueAndDateRange(Long uplineId, String searchValue, Date fromDate, Date toDate);//DC7
 	
 	
-	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId) and created_date between :fromDate and :toDate")
+	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)) and created_date between :fromDate and :toDate")
 	long countByUplineIdAndDateRange(Long uplineId, Date fromDate, Date toDate);//DC8
 	
 	
