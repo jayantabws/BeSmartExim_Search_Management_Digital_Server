@@ -57,7 +57,7 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where is_downloaded = :isDownloaded")
 	long countByIsDownloaded(String isDownloaded);
 
-	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId)")
+	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId))")
 	long countByUplineId(Long uplineId);
 
 	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where is_downloaded = :isDownloaded and (created_by = :uplineId or created_by in (select id from users where upline_id = :uplineId))")
