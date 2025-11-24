@@ -1,5 +1,7 @@
 package com.besmartexim.dto.response;
 
+import java.math.BigDecimal;
+
 public class ExpFor {
 	
 	private Long id;
@@ -28,17 +30,17 @@ public class ExpFor {
 	private String destination_port;
 	private String place_of_discharge;
 	private String total_fob_value_usd;
-	private String total_fob_value;
+	private BigDecimal total_fob_value;
 	private String currency;
-	private String unit_price;
-	private String unit_price_usd;
+	private BigDecimal unit_price;
+	private BigDecimal unit_price_usd;
 	private String gross_weight;
 	private String gross_weight_unit;
 	private String net_weight;
 	private String net_weight_unit;
-	private String quantity;
+	private BigDecimal quantity;
 	private String unit;
-	private String std_quantity;
+	private BigDecimal std_quantity;
 	private String std_unit;
 	private String item_no;
 	private String incoterm;
@@ -103,7 +105,7 @@ public class ExpFor {
 	private String licence_code;
 	private String place_of_receipt;
 	private String fob_value_currency;
-	private String total_value_usd;
+	private BigDecimal total_value_usd;
 	
 	private String cif_value_usd;
 	private String unit_value_cif_usd;
@@ -112,8 +114,8 @@ public class ExpFor {
 	private String ctry_code;
 	private String ctry_name;
 	
-	private String std_unit_rate_usd;
-	private String draw_back;
+	private BigDecimal std_unit_rate_usd;
+	private BigDecimal draw_back;
 	
 	
 	public Long getId() {
@@ -272,10 +274,10 @@ public class ExpFor {
 	public void setTotal_fob_value_usd(String total_fob_value_usd) {
 		this.total_fob_value_usd = total_fob_value_usd;
 	}
-	public String getTotal_fob_value() {
+	public BigDecimal getTotal_fob_value() {
 		return total_fob_value;
 	}
-	public void setTotal_fob_value(String total_fob_value) {
+	public void setTotal_fob_value(BigDecimal total_fob_value) {
 		this.total_fob_value = total_fob_value;
 	}
 	public String getCurrency() {
@@ -284,10 +286,10 @@ public class ExpFor {
 	public void setCurrency(String currency) {
 		this.currency = currency;
 	}
-	public String getUnit_price() {
+	public BigDecimal getUnit_price() {
 		return unit_price;
 	}
-	public void setUnit_price(String unit_price) {
+	public void setUnit_price(BigDecimal unit_price) {
 		this.unit_price = unit_price;
 	}
 	public String getGross_weight() {
@@ -314,10 +316,10 @@ public class ExpFor {
 	public void setNet_weight_unit(String net_weight_unit) {
 		this.net_weight_unit = net_weight_unit;
 	}
-	public String getQuantity() {
+	public BigDecimal getQuantity() {
 		return quantity;
 	}
-	public void setQuantity(String quantity) {
+	public void setQuantity(BigDecimal quantity) {
 		this.quantity = quantity;
 	}
 	public String getUnit() {
@@ -326,10 +328,10 @@ public class ExpFor {
 	public void setUnit(String unit) {
 		this.unit = unit;
 	}
-	public String getStd_quantity() {
+	public BigDecimal getStd_quantity() {
 		return std_quantity;
 	}
-	public void setStd_quantity(String std_quantity) {
+	public void setStd_quantity(BigDecimal std_quantity) {
 		this.std_quantity = std_quantity;
 	}
 	public String getStd_unit() {
@@ -710,10 +712,10 @@ public class ExpFor {
 	public void setFob_value_currency(String fob_value_currency) {
 		this.fob_value_currency = fob_value_currency;
 	}
-	public String getUnit_price_usd() {
+	public BigDecimal getUnit_price_usd() {
 		return unit_price_usd;
 	}
-	public void setUnit_price_usd(String unit_price_usd) {
+	public void setUnit_price_usd(BigDecimal unit_price_usd) {
 		this.unit_price_usd = unit_price_usd;
 	}
 	public String getTotal_value_bdt() {
@@ -722,10 +724,10 @@ public class ExpFor {
 	public void setTotal_value_bdt(String total_value_bdt) {
 		this.total_value_bdt = total_value_bdt;
 	}
-	public String getTotal_value_usd() {
+	public BigDecimal getTotal_value_usd() {
 		return total_value_usd;
 	}
-	public void setTotal_value_usd(String total_value_usd) {
+	public void setTotal_value_usd(BigDecimal total_value_usd) {
 		this.total_value_usd = total_value_usd;
 	}
 	public String getCif_value_usd() {
@@ -758,16 +760,16 @@ public class ExpFor {
 	public void setCtry_name(String ctry_name) {
 		this.ctry_name = ctry_name;
 	}
-	public String getStd_unit_rate_usd() {
+	public BigDecimal getStd_unit_rate_usd() {
 		return std_unit_rate_usd;
 	}
-	public void setStd_unit_rate_usd(String std_unit_rate_usd) {
+	public void setStd_unit_rate_usd(BigDecimal std_unit_rate_usd) {
 		this.std_unit_rate_usd = std_unit_rate_usd;
 	}
-	public String getDraw_back() {
+	public BigDecimal getDraw_back() {
 		return draw_back;
 	}
-	public void setDraw_back(String draw_back) {
+	public void setDraw_back(BigDecimal draw_back) {
 		this.draw_back = draw_back;
 	}
 	
