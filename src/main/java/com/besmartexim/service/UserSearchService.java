@@ -1253,23 +1253,14 @@ public class UserSearchService {
 
 	}
 	
-	public ListMonthwiseResponse listmonthwise(UserSearchRequest userSearchRequest, Long accessedBy) throws Exception {
+	public ListMonthwiseResponse listmonthwise(UserSearchRequest userSearchRequest, Long accessedBy, String checkDepth) throws Exception {
 		Connection connection = null;
 		ResultSet rs = null;
 		ListMonthwiseResponse listMonthwiseResponse = null;
 		try {
 			connection = jdbcTemplate.getDataSource().getConnection();
 
-			String proeName = null;
-
-//			if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("IND"))
-//				proeName = QueryConstant.listMonthwiseBySearchProcedure;
-//			else if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("SEZ"))
-//				proeName = QueryConstant.listMonthwiseBySearchProcedureSEZ;
-//			else
-//				proeName = QueryConstant.listMonthwiseBySearchProcedure;
-			
-			proeName = QueryConstant.listMonthwiseBySearchProcedureAllCountries;
+			String proeName = QueryConstant.listMonthwiseBySearchProcedureAllCountries;
 
 			CallableStatement callableStatement = connection.prepareCall(proeName);
 			callableStatement.setString(1, userSearchRequest.getSearchType().getValue());
@@ -1339,8 +1330,13 @@ public class UserSearchService {
 			callableStatement.execute();
 
 			rs = callableStatement.getResultSet();
-
-			listMonthwiseResponse = userSearchServiceHelper.creteListMonthwise(rs);
+			
+			if("Depth".equalsIgnoreCase(checkDepth)) {
+				listMonthwiseResponse = userSearchServiceHelper.creteListMonthwiseForInDepth(rs);
+			} else {
+				listMonthwiseResponse = userSearchServiceHelper.creteListMonthwise(rs);
+			}
+			
 
 		} catch (Exception e) {
 			logger.error(e.toString());

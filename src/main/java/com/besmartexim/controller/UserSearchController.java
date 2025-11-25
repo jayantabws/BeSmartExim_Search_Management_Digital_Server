@@ -14,7 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -183,7 +185,7 @@ public class UserSearchController {
 	public ResponseEntity<?> listmonthwise(@RequestBody  UserSearchRequest userSearchRequest, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
 		logger.info("Request : /search-management/listmonthwise");
 		//mstContinentService.continentCreate(mstContinentRequest, accessedBy);
-		ListMonthwiseResponse listMonthwiseResponse= userSearchService.listmonthwise(userSearchRequest, accessedBy);
+		ListMonthwiseResponse listMonthwiseResponse= userSearchService.listmonthwise(userSearchRequest, accessedBy, "not");
 		
 		System.out.println(userSearchRequest);
 		
@@ -298,10 +300,10 @@ public class UserSearchController {
 	}
 	
 	
-	@RequestMapping(value = "/search/listAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity allQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,
+	@GetMapping(value = "/search/listAllnew", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<SearchDetailsResponse> allQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,
 			@RequestParam (required=false) String searchValue, @RequestParam (defaultValue = "0") int pageNumber, @RequestParam (defaultValue = "20") int pageSize, 
-			@RequestParam (required=false) String fromDate, @RequestParam (required=false) String toDate,@RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
+			@RequestParam (required=false) String fromDate, @RequestParam (required=false) String toDate,@RequestHeader(required=true) Long accessedBy) throws Exception{
 			
 		logger.info("Request : /search-management/listAllnew");
 		
@@ -324,10 +326,10 @@ public class UserSearchController {
 		
 	}
 	
-	@RequestMapping(value = "/search/countAllnew", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity countAllQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,
+	@GetMapping(value = "/search/countAllnew", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Long> countAllQueriesNew(@RequestParam (required=false) Long userId, @RequestParam (required=false) Long uplineId,@RequestParam (required=false) String isDownloaded,
 			@RequestParam (required=false) String searchValue, @RequestParam (required=false) String fromDate, @RequestParam (required=false) String toDate,
-			@RequestHeader(value="accessedBy", required=true) Long accessedBy) throws Exception{
+			@RequestHeader(required=true) Long accessedBy) throws Exception{
 			
 		logger.info("Request : /search-management/countAllnew");
 		
@@ -344,14 +346,14 @@ public class UserSearchController {
 			td = new Date();
 		}
 		
-		long count = userSearchService.countAllQueriesNew(userId,uplineId,isDownloaded,searchValue,accessedBy,fd, td);
+		Long count = userSearchService.countAllQueriesNew(userId,uplineId,isDownloaded,searchValue,accessedBy,fd, td);
 		
 		return new ResponseEntity<>(count, HttpStatus.OK);
 		
 	}
 	
-	@RequestMapping(value = "/getvalue", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> getTotalValue(@RequestBody @Valid UserSearchRequest userSearchRequest, @RequestHeader(value="accessedBy", required=true) Long accessedBy ) throws Exception{
+	@PostMapping(value = "/getvalue", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<?> getTotalValue(@RequestBody @Valid UserSearchRequest userSearchRequest, @RequestHeader(required=true) Long accessedBy ) throws Exception{
 		logger.info("Request : /search-management/getTotalValue");
 		
 		Long total_value= userSearchService.getValue(userSearchRequest,accessedBy);
@@ -360,9 +362,9 @@ public class UserSearchController {
 	}
 	
 	
-	@RequestMapping(value = "/searchdepth", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/searchdepth", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> searchForInDepth(@RequestBody @Valid UserSearchRequest userSearchRequest,
-			@RequestHeader(value = "accessedBy", required = true) Long accessedBy) throws Exception {
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("Request : /search-management/searchdepth");
 
 		if (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId().equals("")
@@ -379,5 +381,14 @@ public class UserSearchController {
 		UserSearchResponse userSearchResponse = userSearchService.searchInDepth(userSearchRequest, accessedBy);
 
 		return new ResponseEntity<>(userSearchResponse, HttpStatus.OK);
+	}
+	
+	@PostMapping(value = "/monthwiseindepth", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ListMonthwiseResponse> listmonthwiseDepth(@RequestBody  UserSearchRequest userSearchRequest, @RequestHeader(required=true) Long accessedBy ) throws Exception{
+		logger.info("Request : /search-management/monthwiseindepth");
+		
+		ListMonthwiseResponse listMonthwiseResponse= userSearchService.listmonthwise(userSearchRequest, accessedBy, "depth");
+		
+		return new ResponseEntity<>(listMonthwiseResponse, HttpStatus.OK);
 	}
 }
