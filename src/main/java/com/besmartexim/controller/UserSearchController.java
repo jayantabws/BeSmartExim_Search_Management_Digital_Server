@@ -322,7 +322,7 @@ public class UserSearchController {
 		
 		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId,uplineId,isDownloaded,accessedBy,searchValue, PageRequest.of(pageNumber, pageSize),fd, td);
 		
-		return new ResponseEntity<>(searchDetailsResponse, HttpStatus.OK);
+		return ResponseEntity.ok(searchDetailsResponse);
 		
 	}
 	
@@ -348,7 +348,7 @@ public class UserSearchController {
 		
 		Long count = userSearchService.countAllQueriesNew(userId,uplineId,isDownloaded,searchValue,accessedBy,fd, td);
 		
-		return new ResponseEntity<>(count, HttpStatus.OK);
+		return ResponseEntity.ok(count);
 		
 	}
 	
@@ -358,7 +358,7 @@ public class UserSearchController {
 		
 		Long total_value= userSearchService.getValue(userSearchRequest,accessedBy);
 		
-		return new ResponseEntity<>(total_value, HttpStatus.OK);
+		return ResponseEntity.ok(total_value);
 	}
 	
 	
@@ -380,7 +380,7 @@ public class UserSearchController {
 		
 		UserSearchResponse userSearchResponse = userSearchService.searchInDepth(userSearchRequest, accessedBy);
 
-		return new ResponseEntity<>(userSearchResponse, HttpStatus.OK);
+		return ResponseEntity.ok(userSearchResponse);
 	}
 	
 	@PostMapping(value = "/monthwiseindepth", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -389,6 +389,16 @@ public class UserSearchController {
 		
 		ListMonthwiseResponse listMonthwiseResponse= userSearchService.listmonthwise(userSearchRequest, accessedBy, "depth");
 		
-		return new ResponseEntity<>(listMonthwiseResponse, HttpStatus.OK);
+		return ResponseEntity.ok(listMonthwiseResponse);
+	}
+	
+	
+	@PostMapping(value = "/listhscodes2digit", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<ListHscodesResponse> listhscodes2digit(@RequestBody  UserSearchRequest userSearchRequest, @RequestHeader(required=true) Long accessedBy ) throws Exception{
+		logger.info("Request : /search-management/listhscodes2digit");
+		
+		ListHscodesResponse listHscodesResponse= userSearchService.listhscodes4digit(userSearchRequest, accessedBy);
+		
+		return ResponseEntity.ok(listHscodesResponse);
 	}
 }
