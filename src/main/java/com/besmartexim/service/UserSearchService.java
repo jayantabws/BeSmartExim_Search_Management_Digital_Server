@@ -1,7 +1,10 @@
 package com.besmartexim.service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +25,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import com.besmartexim.database.entity.User;
 import com.besmartexim.database.entity.UserSearch;
@@ -33,6 +35,7 @@ import com.besmartexim.dto.request.SearchCountUpdateRequest;
 import com.besmartexim.dto.request.SuggestionRequest;
 import com.besmartexim.dto.request.UserSearchRequest;
 import com.besmartexim.dto.response.CountryWiseCountResponse;
+import com.besmartexim.dto.response.GraphResponse;
 import com.besmartexim.dto.response.ListCitiesResponse;
 import com.besmartexim.dto.response.ListCountriesResponse;
 import com.besmartexim.dto.response.ListDistinctColumnValuesResponse;
@@ -79,7 +82,7 @@ public class UserSearchService {
 	public UserSearchResponse search(UserSearchRequest userSearchRequest, Long accessedBy) throws Exception {
 		UserSearch userSearch = new UserSearch();
 
-		if (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId().equals("") || userSearchRequest.getSearchId() == 0) {
+		if (userSearchRequest.getSearchId() == null ||  userSearchRequest.getSearchId() == 0) {
 			userSearch.setCreatedDate(new Date());
 			userSearch.setCreatedBy(accessedBy);
 			userSearch.setIsSaved("N");
@@ -214,7 +217,7 @@ public class UserSearchService {
 				
 				callableStatement.setQueryTimeout(time_in_seconds);
 				
-				boolean b = callableStatement.execute();
+				callableStatement.execute();
 			}
 			CallableStatement callableStatement;
 			if (queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("IND") || queryUtil.objectToString(userSearchRequest.getCountryCode()).equalsIgnoreCase("SEZ"))
@@ -295,7 +298,7 @@ public class UserSearchService {
 			
 			callableStatement.setQueryTimeout(time_in_seconds);
 			//callableStatement.sett
-			boolean b = callableStatement.execute();
+			callableStatement.execute();
 
 			rs = callableStatement.getResultSet();
 
@@ -1690,7 +1693,7 @@ public class UserSearchService {
 
 		List<UserSearch> userSearchList = userSearchRepository.findTop5ByCreatedByOrderByCreatedDateDesc(usetId);
 
-		for (Iterator iterator = userSearchList.iterator(); iterator.hasNext();) {
+		for (Iterator<UserSearch> iterator = userSearchList.iterator(); iterator.hasNext();) {
 			UserSearch userSearch = (UserSearch) iterator.next();
 			searchDetails = new SearchDetails();
 			searchDetails.setSearchId(userSearch.getId());
@@ -1734,8 +1737,8 @@ public class UserSearchService {
 	@Value("${usermanagement.service.url}")
 	private String usermanagementUrl;
 
-	@Autowired
-	private RestTemplate restTemplate;
+//	@Autowired
+//	private RestTemplate restTemplate;
 
 	public SearchDetailsResponse listAllQueries(Long userId, Long uplineId, String isDownloaded, Long accessedBy, Pageable pageable)
 			throws Exception {
@@ -1772,7 +1775,7 @@ public class UserSearchService {
 		headers.add("accessedBy", "" + accessedBy);
 		headers.add("Authorization", "Basic YXBpLWV4aW13YXRjaDp1ZTg0Q1JSZnRAWGhBMyRG");
 
-		for (Iterator iterator = userSearchList.iterator(); iterator.hasNext();) {
+		for (Iterator<UserSearch> iterator = userSearchList.iterator(); iterator.hasNext();) {
 			UserSearch userSearch = (UserSearch) iterator.next();
 			searchDetails = new SearchDetails();
 			searchDetails.setSearchId(userSearch.getId());
@@ -1928,7 +1931,7 @@ public class UserSearchService {
 	}
 
 	public void downloadsearch(Long searchId, Long accessedBy, Long recordsDownloaded) {
-		// TODO Auto-generated method stub
+
 		UserSearch existingUserSearch = userSearchRepository.findById(searchId).get();
 		existingUserSearch.setIsDownloaded("Y");
 		existingUserSearch.setDownloadedBy(accessedBy);
@@ -2290,7 +2293,7 @@ public class UserSearchService {
 		headers.add("accessedBy", "" + accessedBy);
 		headers.add("Authorization", "Basic YXBpLWV4aW13YXRjaDp1ZTg0Q1JSZnRAWGhBMyRG");
 
-		for (Iterator iterator = userSearchList.iterator(); iterator.hasNext();) {
+		for (Iterator<UserSearch> iterator = userSearchList.iterator(); iterator.hasNext();) {
 			UserSearch userSearch = (UserSearch) iterator.next();
 			searchDetails = new SearchDetails();
 			searchDetails.setSearchId(userSearch.getId());
@@ -2518,7 +2521,7 @@ public class UserSearchService {
 
 			callableStatement.setQueryTimeout(time_in_seconds);
 			// callableStatement.sett
-			boolean b = callableStatement.execute();
+			callableStatement.execute();
 
 			rs = callableStatement.getResultSet();
 
@@ -2536,4 +2539,54 @@ public class UserSearchService {
 
 		return userSearchResponse;
 	}
+	
+	
+	public List<GraphResponse> industryGraph(String exImp, String fromDate, String toDate, String hsCode) throws Exception{
+		
+		String tableName = null;
+		if(exImp != null ) {
+			if(exImp.equalsIgnoreCase("Export"))
+				tableName = "INDUSTRY_EXP";
+			else
+				tableName = "INDUSTRY_IMP";
+		}
+		hsCode = hsCode+"%";
+		Connection connection = null;
+		ResultSet rs = null;
+		List<GraphResponse> response = new ArrayList<GraphResponse>();
+		GraphResponse res = null;
+		
+		try {
+			connection = jdbcTemplate.getDataSource().getConnection();
+			
+			// "select [MONTH] as monthName,SUM([value]) as monthValue from INDUSTRY_EXP where [date] between ? and ? and [hs_code] like ? group by [MONTH],monthserial order by monthserial";
+			String customQuery = new StringBuilder().append("select [MONTH] as monthName,SUM([value]) as monthValue from ").append(tableName)
+					.append(" where [date] between ? and ? and [hs_code] like ? group by [MONTH],monthserial order by monthserial").toString();
+		    PreparedStatement pstmt = connection.prepareStatement(customQuery);
+		    pstmt.setString(1, fromDate);
+		    pstmt.setString(2, toDate);
+		    pstmt.setString(3, hsCode);
+		    
+		    rs = pstmt.executeQuery();
+		    
+		    while (rs.next()) {
+		    	res = new GraphResponse();
+		    	res.setMonthName(rs.getString("monthName"));
+		    	res.setMonthValue((rs.getString("monthValue") != null) ? new BigDecimal(rs.getString("monthValue")).setScale(3, RoundingMode.HALF_UP) : null);
+		    	
+		    	response.add(res);
+		    }
+		    
+		} catch (Exception e) {
+			logger.error(e.toString());
+		} finally {
+			if (rs != null)
+				rs.close();
+			if (connection != null)
+				connection.close();
+		}
+		
+		return response;
+	}
+	
 }
