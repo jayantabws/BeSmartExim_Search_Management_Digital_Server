@@ -29,6 +29,7 @@ import com.besmartexim.dto.request.SuggestionRequest;
 import com.besmartexim.dto.request.UserSearchRequest;
 import com.besmartexim.dto.response.CountryWiseCountResponse;
 import com.besmartexim.dto.response.GraphResponse;
+import com.besmartexim.dto.response.HsCodeList;
 import com.besmartexim.dto.response.ListCitiesResponse;
 import com.besmartexim.dto.response.ListCountriesResponse;
 import com.besmartexim.dto.response.ListDistinctColumnValuesResponse;
@@ -436,16 +437,6 @@ public class UserSearchController {
 		return ResponseEntity.ok(listMonthwiseResponse);
 	}
 
-	@PostMapping(value = "/listhscodes2digit", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<ListHscodesResponse> listhscodes2digit(@RequestBody UserSearchRequest userSearchRequest,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
-		logger.info("Request : /search-management/listhscodes2digit");
-
-		ListHscodesResponse listHscodesResponse = userSearchService.listhscodes4digit(userSearchRequest, accessedBy);
-
-		return ResponseEntity.ok(listHscodesResponse);
-	}
-	
 	
 	@GetMapping(value = "/industrygraph", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<GraphResponse>> getIndustryGraphData(@RequestParam(required = true) String exImp,
@@ -459,4 +450,14 @@ public class UserSearchController {
 		return ResponseEntity.ok(res);
 	}
 	
+	@GetMapping(value = "/hscodelist", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<HsCodeList>> getHsCodeList(@RequestParam(required = true) String exImp,@RequestParam(required = true) Integer digit,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
+		
+		logger.info("Request : /search-management/listhscodes2digit");
+
+		List<HsCodeList> listHscodesResponse = userSearchService.getListOfHsCode(exImp,digit, accessedBy);
+
+		return ResponseEntity.ok(listHscodesResponse);
+	}
 }
