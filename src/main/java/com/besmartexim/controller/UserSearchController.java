@@ -454,9 +454,22 @@ public class UserSearchController {
 	public ResponseEntity<List<HsCodeList>> getHsCodeList(@RequestParam(required = true) String exImp,@RequestParam(required = true) Integer digit,
 			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		
-		logger.info("Request : /search-management/listhscodes2digit");
+		logger.info("Request : /search-management/hscodelist");
 
 		List<HsCodeList> listHscodesResponse = userSearchService.getListOfHsCode(exImp,digit, accessedBy);
+
+		return ResponseEntity.ok(listHscodesResponse);
+	}
+	
+	
+	@GetMapping(value = "/realtivegraph", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<GraphResponse>> getRelativeGraphData(@RequestParam(required = true) String exImp,@RequestParam(required = false) String searchBy,
+			@RequestParam(required = true) String fromDate, @RequestParam(required = true) String toDate,
+			@RequestParam(required = true) String hsCode, @RequestHeader(required = true) Long accessedBy) throws Exception {
+		
+		logger.info("Request : /search-management/hscodelist");
+
+		List<GraphResponse> listHscodesResponse = userSearchService.getGraphData(exImp,searchBy, fromDate, toDate, hsCode,accessedBy);
 
 		return ResponseEntity.ok(listHscodesResponse);
 	}
