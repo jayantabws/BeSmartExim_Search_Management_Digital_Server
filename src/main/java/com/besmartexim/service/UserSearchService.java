@@ -2136,9 +2136,9 @@ public class UserSearchService {
 		SearchDetails searchDetails = null;
 		List<UserSearch> userSearchList = null;
 
-		//if (pageable.getPageNumber() > 0)
-			pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
-					Sort.by("createdDate").descending());
+		// if (pageable.getPageNumber() > 0)
+		pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+				Sort.by("createdDate").descending());
 
 		if (searchValue != null && searchValue != "")
 			searchValue = "%\"searchValue\"%" + searchValue + "%";
@@ -2609,112 +2609,107 @@ public class UserSearchService {
 		}
 		return response;
 	}
-	
-	
-	public List<GraphResponse> getGraphData(String exImp, String searchBy, String fromDate, String toDate, String hsCode, Long accessedBy) throws Exception {
 
-		String hsCodeTable = null, industryTable = null;
-		
-		if (exImp != null) {
-			if (exImp.equalsIgnoreCase("Export")) {
-				hsCodeTable = " [tempdb].[dbo].[EXPORT_FOR_Temp_" + accessedBy + "] ";
-				industryTable = "INDUSTRY_EXP";
-			} else {
-				hsCodeTable = " [tempdb].[dbo].[IMPORT_FOR_Temp_" + accessedBy + "] ";
-				industryTable = "INDUSTRY_IMP";
-			}
-		}
-		
-		StringBuilder hsCodeQuery = new StringBuilder()
-				.append("SELECT [month] monthName, SUM([total_value_usd]) AS value_usd FROM ").append(hsCodeTable)
-				.append(" where [date] between ? and ?");
-		
-		if(searchBy != null && (searchBy.equalsIgnoreCase("HS_CODE") || searchBy.equalsIgnoreCase("HS_CODE_2"))) {
-			if(hsCode != null && hsCode.length()==8) {
-				hsCodeQuery.append(" and hs_code like '"+hsCode+"' ");
-			} else if(hsCode != null && hsCode.length()==4) {
-				hsCodeQuery.append(" and hs_code4 like '"+hsCode+"' ");
-			}else if(hsCode != null && hsCode.length()==2) {
-				hsCodeQuery.append(" and hs_code2 like '"+hsCode+"' ");
-			}
-		} else {
-			hsCodeQuery.append(" and hs_code like '"+hsCode+"%' ");
-		}
-		hsCodeQuery.append(" group by [MONTH]");
-		
-		StringBuilder industryQuery = new StringBuilder()
-		.append("select [MONTH] as monthName,SUM([value]) as monthValue from ").append(industryTable)
-		.append(" where [date] between ? and ?");
-		
-		if(searchBy != null && (searchBy.equalsIgnoreCase("HS_CODE") || searchBy.equalsIgnoreCase("HS_CODE_2"))) {
-			if(hsCode != null && hsCode.length()==8) {
-				industryQuery.append(" and hs_code like '"+hsCode.substring(0, 4)+"%' ");
-			} else if(hsCode != null && hsCode.length()==4) {
-				industryQuery.append(" and hs_code like '"+hsCode.substring(0, 2)+"%' ");
-			}else if(hsCode != null && hsCode.length()==2) {
-				industryQuery.append(" and hs_code like '"+hsCode+"%' ");
-			}
-		} else {
-			industryQuery.append(" and hs_code like '"+hsCode+"%' ");
-		}
-		industryQuery.append(" group by [MONTH],monthserial order by monthserial");
-		
-		Connection connection = null;
-		ResultSet rs = null;
-		List<GraphResponse> response = new ArrayList<GraphResponse>();
-		Map<String, GraphResponse> map = new HashMap<String, GraphResponse>();
-		GraphResponse res = null;
-
-		try {
-			connection = jdbcTemplate.getDataSource().getConnection();
-
-			PreparedStatement pstmt = connection.prepareStatement(hsCodeQuery.toString());
-			pstmt.setString(1, fromDate);
-			pstmt.setString(2, toDate);
-			rs = pstmt.executeQuery();
-			logger.info("SQL Query = " + hsCodeQuery);
-			while (rs.next()) {
-				res = new GraphResponse();
-				res.setMonthName(rs.getString("monthName"));
-				res.setMonthValue((rs.getString("value_usd") != null)
-						? new BigDecimal(rs.getString("value_usd")).setScale(3, RoundingMode.HALF_UP)
-						: null);
-
-				map.put(res.getMonthName(), res);
-			}
-			
-			
-			pstmt = connection.prepareStatement(industryQuery.toString());
-			pstmt.setString(1, fromDate);
-			pstmt.setString(2, toDate);
-			rs = pstmt.executeQuery();
-			logger.info("SQL Query = " + industryQuery);
-			while (rs.next()) {
-				//res = map.get(rs.getString("monthName"));
-				res = (map.get(rs.getString("monthName")) != null ) ? map.get(rs.getString("monthName")) : new GraphResponse(rs.getString("monthName"));
-				res.setIndustryExportValue((rs.getString("monthValue") != null)
-						? new BigDecimal(rs.getString("monthValue")).setScale(3, RoundingMode.HALF_UP)
-						: null);
-				double codeValue = (res.getMonthValue() != null) ? res.getMonthValue().doubleValue() : 0.00d;
-				double industryValue = (res.getIndustryExportValue() != null) ? res.getIndustryExportValue().doubleValue() : 0.01d;
-				double result = (codeValue/industryValue)*100;
-				res.setRelativeStrengthValue(new BigDecimal(result).setScale(3, RoundingMode.HALF_UP));
-			
-				response.add(res);
-			}
-			
-		} catch (Exception e) {
-			logger.error(e.toString());
-		} finally {
-			if (rs != null)
-				rs.close();
-			if (connection != null)
-				connection.close();
-		}
-
-		return response;
-	
-	}
-	
+//	public List<GraphResponse> getGraphData(String exImp, String countryCode, String fromDate, String toDate,
+//			String hsCode, Long accessedBy) throws Exception {
+//
+//		String hsCodeTable = null, industryTable = null;
+//		List<GraphResponse> response = new ArrayList<GraphResponse>();
+//
+//		// Create Table name dynamic...........
+//		if (exImp != null) {
+//			if (exImp.equalsIgnoreCase("Export")) {
+//				hsCodeTable = " [tempdb].[dbo].[EXPORT_FOR_Temp_" + accessedBy + "] ";
+//				industryTable = " [cus_db].[dbo].[INDUSTRY_EXP]";
+//			} else {
+//				hsCodeTable = " [tempdb].[dbo].[IMPORT_FOR_Temp_" + accessedBy + "] ";
+//				industryTable = "[cus_db].[dbo].[INDUSTRY_IMP]";
+//			}
+//		} else
+//			return response;
+//
+//		// Create SQL query for HS-Code value for graph data............
+//		StringBuilder hsCodeQuery = new StringBuilder()
+//				.append("SELECT [month] monthName, SUM([total_value_usd]) AS hsCodeValue FROM ").append(hsCodeTable)
+//				.append(" where");
+//
+//		// Create SQL query for Industry value for graph data............
+//		StringBuilder industryQuery = new StringBuilder()
+//				.append("select [MONTH] as monthName,SUM([value]) as industryValue from ").append(industryTable)
+//				.append(" where [date] between ? and ? and country_code = ?");
+//
+//		if (hsCode == null || hsCode.trim().length() == 0)
+//			return response;
+//		else {
+//			if (hsCode.trim().length() == 8) {
+//				hsCodeQuery.append(" hs_code = '" + hsCode + "' group by [MONTH]");
+//				industryQuery.append(" and hs_code like '" + hsCode.substring(0, 4)
+//						+ "' group by [MONTH],monthserial order by monthserial");
+//			} else if (hsCode.trim().length() == 4) {
+//				hsCodeQuery.append(" hs_code4 = '" + hsCode + "' group by [MONTH]");
+//				industryQuery.append(" and hs_code like '" + hsCode.trim().substring(0, 2)
+//						+ "%' group by [MONTH],monthserial order by monthserial");
+//			} else {
+//				hsCodeQuery.append(" hs_code2 = '" + hsCode + "' group by [MONTH]");
+//				industryQuery.append(
+//						" and hs_code like '" + hsCode + "%' group by [MONTH],monthserial order by monthserial");
+//			}
+//		}
+//
+//		Connection connection = null;
+//		ResultSet rs = null;
+//		Map<String, GraphResponse> map = new HashMap<String, GraphResponse>();
+//		GraphResponse res = null;
+//
+//		try {
+//			connection = jdbcTemplate.getDataSource().getConnection();
+//
+//			PreparedStatement pstmt = connection.prepareStatement(hsCodeQuery.toString());
+//			rs = pstmt.executeQuery();
+//			logger.info("SQL Query = " + hsCodeQuery);
+//
+//			while (rs.next()) {
+//				res = new GraphResponse();
+//				res.setMonthName(rs.getString("monthName"));
+//				res.setHsCodeValue((rs.getString("hsCodeValue") != null)
+//						? new BigDecimal(rs.getString("hsCodeValue")).setScale(3, RoundingMode.HALF_UP)
+//						: null);
+//
+//				map.put(res.getMonthName(), res);
+//			}
+//
+//			pstmt = connection.prepareStatement(industryQuery.toString());
+//			pstmt.setString(1, fromDate);
+//			pstmt.setString(2, toDate);
+//			pstmt.setString(3, countryCode);
+//			rs = pstmt.executeQuery();
+//			logger.info("SQL Query = " + industryQuery);
+//
+//			while (rs.next()) {
+//				res = (map.get(rs.getString("monthName")) != null) ? map.get(rs.getString("monthName"))
+//						: new GraphResponse(rs.getString("monthName"));
+//				res.setIndustryValue((rs.getString("industryValue") != null)
+//						? new BigDecimal(rs.getString("industryValue")).setScale(3, RoundingMode.HALF_UP)
+//						: null);
+//
+//				double codeValue = (res.getHsCodeValue() != null) ? res.getHsCodeValue().doubleValue() : 0.00d;
+//				double industryValue = (res.getIndustryValue() != null) ? res.getIndustryValue().doubleValue() : 0.01d;
+//				double result = (codeValue / industryValue) * 100;
+//				res.setRelativeStrengthValue(new BigDecimal(result).setScale(3, RoundingMode.HALF_UP));
+//
+//				response.add(res);
+//			}
+//
+//		} catch (Exception e) {
+//			logger.error(e.toString());
+//		} finally {
+//			if (rs != null)
+//				rs.close();
+//			if (connection != null)
+//				connection.close();
+//		}
+//
+//		return response;
+//	}
 
 }

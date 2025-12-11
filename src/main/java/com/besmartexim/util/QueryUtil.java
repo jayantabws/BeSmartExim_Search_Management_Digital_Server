@@ -121,21 +121,10 @@ public class QueryUtil {
 	}
 	
 	
-//	public static void main(String args[]) throws JsonMappingException, JsonProcessingException {
+//	public static void main(String args[]) {
 //		
-//		Double ss =1.0E-5;
-//		System.out.println(new BigDecimal(ss));
-//		
-//		List<String> list = new ArrayList<String>();
-//		list.add("Jayanta");
-//		list.add("Palash");
-//		System.out.println(listToString(list));
-//		String str ="{\"searchType\":\"TRADE\",\"tradeType\":\"EXPORT\",\"fromDate\":\"2024-01-01\",\"toDate\":\"2024-01-31\",\"searchBy\":\"HS_CODE\",\"searchValue\":[\"2915\"],\"matchType\":\"L\",\"countryCode\":[\"ARG\",\"BAN\"],\"searchId\":null,\"hsCodeList\":null,\"hsCode4DigitList\":null,\"exporterList\":null,\"importerList\":null,\"cityOriginList\":null,\"cityDestinationList\":null,\"portOriginList\":null,\"portDestinationList\":null,\"columnName\":null,\"orderByColumn\":\"\",\"orderByMode\":\"desc\",\"pageNumber\":0,\"numberOfRecords\":20,\"queryBuilder\":[],\"shipModeList\":null,\"stdUnitList\":null,\"rangeQuantityStart\":null,\"rangeQuantityEnd\":null,\"consumptionType\":null,\"rangeValueUsdStart\":null,\"rangeValueUsdEnd\":null,\"rangeUnitPriceUsdStart\":null,\"rangeUnitPriceUsdEnd\":null,\"incoterm\":null,\"notifyParty\":null,\"productDesc\":null,\"conditionProductDesc\":null}";	
-//				JsonNode jsonNode = new ObjectMapper().readTree(str);
-//		System.out.println(jsonNode.get("countryCode"));
-//		String country = jsonNode.get("countryCode").toString();
-//		System.out.println("String =>"+country);
-//		
-//		System.out.println(LocalDateTime.now());
+//		String ss = "";
+//		String ss1 = " ";
+//		System.out.println(ss.trim().length());
 //	}
 }

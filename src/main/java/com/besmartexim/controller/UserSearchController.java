@@ -462,15 +462,15 @@ public class UserSearchController {
 	}
 	
 	
-	@GetMapping(value = "/realtivegraph", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<GraphResponse>> getRelativeGraphData(@RequestParam(required = true) String exImp,@RequestParam(required = false) String searchBy,
-			@RequestParam(required = true) String fromDate, @RequestParam(required = true) String toDate,
-			@RequestParam(required = true) String hsCode, @RequestHeader(required = true) Long accessedBy) throws Exception {
-		
-		logger.info("Request : /search-management/hscodelist");
-
-		List<GraphResponse> listHscodesResponse = userSearchService.getGraphData(exImp,searchBy, fromDate, toDate, hsCode,accessedBy);
-
-		return ResponseEntity.ok(listHscodesResponse);
-	}
+//	@GetMapping(value = "/realtivegraph", produces = MediaType.APPLICATION_JSON_VALUE)
+//	public ResponseEntity<List<GraphResponse>> getRelativeGraphData(@RequestParam(required = true) String exImp,@RequestParam(required = true) String countryCode,
+//			@RequestParam(required = true) String fromDate, @RequestParam(required = true) String toDate,
+//			@RequestParam(required = true) String hsCode, @RequestHeader(required = true) Long accessedBy) throws Exception {
+//		
+//		logger.info("Request : /search-management/realtivegraph");
+//
+//		List<GraphResponse> listHscodesResponse = userSearchService.getGraphData(exImp,countryCode, fromDate, toDate, hsCode,accessedBy);
+//
+//		return ResponseEntity.ok(listHscodesResponse);
+//	}
 }
