@@ -143,9 +143,8 @@ public class UserSearchService {
 //			}
 
 			if (userSearchRequest.getPageNumber() == 0 && userSearchRequest.getNumberOfRecords() < 10000
-					&& (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId().equals("")
-							|| userSearchRequest.getSearchId() == 0)
-					&& !userSearchRequest.getSearchType().equals("ADVANCE")) {
+					&& (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId() == 0)
+					&& !userSearchRequest.getSearchType().toString().equals("ADVANCE")) {
 				CallableStatement callableStatement = connection.prepareCall(proeName);
 				callableStatement.setString(1, userSearchRequest.getSearchType().getValue());
 				callableStatement.setString(2, userSearchRequest.getTradeType().getValue());
