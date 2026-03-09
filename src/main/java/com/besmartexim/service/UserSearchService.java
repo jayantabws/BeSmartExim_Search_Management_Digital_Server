@@ -21,10 +21,14 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import com.besmartexim.database.entity.User;
 import com.besmartexim.database.entity.UserSearch;
@@ -66,6 +70,12 @@ public class UserSearchService {
 
 	@Autowired
 	private JdbcTemplate jdbcTemplate;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	@Value("${usermanagement.service.loginstatus}")
+	private String loginstatusUrl;
 
 	@Autowired
 	UserSearchServiceHelper userSearchServiceHelper;
@@ -81,6 +91,25 @@ public class UserSearchService {
 
 	public UserSearchResponse search(UserSearchRequest userSearchRequest, Long accessedBy) throws Exception {
 		UserSearch userSearch = new UserSearch();
+		
+		User userEntity = userRepository.findById(accessedBy).orElse(null);
+		if (userEntity != null) {
+			if(userEntity.getIsActive().equalsIgnoreCase("Y") && userEntity.getIsDelete().equalsIgnoreCase("N")) {
+				HttpHeaders headers = new HttpHeaders();
+				headers.setContentType(MediaType.APPLICATION_JSON);
+				headers.add("accessedBy", "" + accessedBy);
+				headers.add("Authorization", "Basic YXBpLWV4aW13YXRjaDp1ZTg0Q1JSZnRAWGhBMyRG");
+
+				ResponseEntity<Long> responseEntity = restTemplate.exchange(loginstatusUrl, HttpMethod.GET,
+						new HttpEntity<Object>(headers), Long.class);
+				Long count = responseEntity.getBody();
+				
+				if(count !=1)
+					return null;
+			}	
+		}
+		
+		
 
 		if (userSearchRequest.getSearchId() == null || userSearchRequest.getSearchId() == 0) {
 			userSearch.setCreatedDate(new Date());
