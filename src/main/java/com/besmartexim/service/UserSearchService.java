@@ -93,8 +93,12 @@ public class UserSearchService {
 		UserSearch userSearch = new UserSearch();
 		
 		User userEntity = userRepository.findById(accessedBy).orElse(null);
-		if (userEntity != null) {
-			if(userEntity.getIsActive().equalsIgnoreCase("Y") && userEntity.getIsDelete().equalsIgnoreCase("N")) {
+		if (userEntity == null) {
+			return null;
+		} else {
+			if (userEntity.getIsActive().equalsIgnoreCase("N") || userEntity.getIsDelete().equalsIgnoreCase("Y")) {
+				return null;
+			} else {
 				HttpHeaders headers = new HttpHeaders();
 				headers.setContentType(MediaType.APPLICATION_JSON);
 				headers.add("accessedBy", "" + accessedBy);
@@ -103,10 +107,10 @@ public class UserSearchService {
 				ResponseEntity<Long> responseEntity = restTemplate.exchange(loginstatusUrl, HttpMethod.GET,
 						new HttpEntity<Object>(headers), Long.class);
 				Long count = responseEntity.getBody();
-				
-				if(count !=1)
+
+				if (count != 1)
 					return null;
-			}	
+			}
 		}
 		
 		
