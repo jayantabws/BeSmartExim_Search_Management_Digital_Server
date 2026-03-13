@@ -269,7 +269,7 @@ public class UserSearchController {
 			@RequestHeader(required = true) Long accessedBy) throws Exception {
 
 		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueries(userId, uplineId, isDownloaded,
-				accessedBy, PageRequest.of(page*size, size));
+				accessedBy, PageRequest.of(page, size));
 
 		return new ResponseEntity<>(searchDetailsResponse, HttpStatus.OK);
 
@@ -351,7 +351,7 @@ public class UserSearchController {
 		}
 
 		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId, uplineId,
-				isDownloaded, accessedBy, searchValue, PageRequest.of(pageNumber*pageSize, pageSize, Sort.by("createdDate").descending()), fd, td);
+				isDownloaded, accessedBy, searchValue, PageRequest.of(pageNumber, pageSize, Sort.by("createdDate").descending()), fd, td);
 
 		return ResponseEntity.ok(searchDetailsResponse);
 

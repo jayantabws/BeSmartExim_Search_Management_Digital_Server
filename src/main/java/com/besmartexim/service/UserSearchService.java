@@ -1766,10 +1766,10 @@ public class UserSearchService {
 		} else if (uplineId != null) {
 			if (isDownloaded != null && isDownloaded != "")
 				userSearchList = userSearchRepository.findByUplineIdAndIsDownloadedOrderByCreatedDateDesc(uplineId,
-						isDownloaded, pageable.getPageNumber(), pageable.getPageSize());
+						isDownloaded, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize());
 			else
 				userSearchList = userSearchRepository.findByUplineIdOrderByCreatedDateDesc(uplineId,
-						pageable.getPageNumber(), pageable.getPageSize());
+						pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize());
 		} else {
 			if (isDownloaded != null && isDownloaded != "")
 				userSearchList = userSearchRepository.findByIsDownloaded(isDownloaded, pageable).getContent();
@@ -2174,15 +2174,15 @@ public class UserSearchService {
 				if (searchValue != null && searchValue != "") {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.customByUserIdAndIsDownloadAndSearchValueAndDateRange(
-								userId, isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize(),
+								userId, isDownloaded, searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(),
 								fromDate, toDate); // D1
 					else
 						userSearchList = userSearchRepository.customByUserIdAndIsDownloadAndSearchValue(userId,
-								isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize()); // Q1
+								isDownloaded, searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize()); // Q1
 				} else {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.findByCreatedByAndIsDownloadedAndDateRange(userId,
-								isDownloaded, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D2
+								isDownloaded, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate); // D2
 					else
 						userSearchList = userSearchRepository
 								.findByCreatedByAndIsDownloaded(userId, isDownloaded, pageable).getContent();
@@ -2192,14 +2192,14 @@ public class UserSearchService {
 				if (searchValue != null && searchValue != "") {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.customByUserIdAndSearchValueAndDateRange(userId,
-								searchValue, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D3
+								searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate); // D3
 					else
 						userSearchList = userSearchRepository.customByUserIdAndSearchValue(userId, searchValue,
-								pageable.getPageNumber(), pageable.getPageSize()); // Q2
+								pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize()); // Q2
 				} else {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.customByCreatedByAndDateRange(userId,
-								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);// D4
+								pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate);// D4
 					else
 						userSearchList = userSearchRepository.findByCreatedBy(userId, pageable).getContent();
 				}
@@ -2211,38 +2211,38 @@ public class UserSearchService {
 				if (searchValue != null && searchValue != "") {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.customByUplineIdAndIsDownloadAndSearchValueAndDateRange(
-								uplineId, isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize(),
+								uplineId, isDownloaded, searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(),
 								fromDate, toDate);// D5
 					else
 						userSearchList = userSearchRepository.customByUplineIdAndIsDownloadAndSearchValue(uplineId,
-								isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize());// Q3
+								isDownloaded, searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize());// Q3
 				}
 
 				else {
 					if (fromDate != null)
 						userSearchList = userSearchRepository
 								.findByUplineIdAndIsDownloadedAndDateRangeOrderByCreatedDateDesc(uplineId, isDownloaded,
-										pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D6
+										pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate); // D6
 					else
 						userSearchList = userSearchRepository.findByUplineIdAndIsDownloadedOrderByCreatedDateDesc(
-								uplineId, isDownloaded, pageable.getPageNumber(), pageable.getPageSize());
+								uplineId, isDownloaded, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize());
 				}
 
 			} else {
 				if (searchValue != null && searchValue != "") {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.customByUplineIdAndSearchValueAndDateRange(uplineId,
-								searchValue, pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D7
+								searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate); // D7
 					else
 						userSearchList = userSearchRepository.customByUplineIdAndSearchValue(uplineId, searchValue,
-								pageable.getPageNumber(), pageable.getPageSize()); // Q4
+								pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize()); // Q4
 				} else {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.findByUplineIdAndDateRangeOrderByCreatedDateDesc(uplineId,
-								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);// D8
+								pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate);// D8
 					else
 						userSearchList = userSearchRepository.findByUplineIdOrderByCreatedDateDesc(uplineId,
-								pageable.getPageNumber(), pageable.getPageSize());
+								pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize());
 				}
 			}
 
@@ -2251,15 +2251,15 @@ public class UserSearchService {
 				if (searchValue != null && searchValue != "") {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.customByIsDownloadedAndSearchValueAndDateRange(
-								isDownloaded, searchValue, pageable.getPageNumber(), pageable.getPageSize(), fromDate,
+								isDownloaded, searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate,
 								toDate);// D9
 					else
 						userSearchList = userSearchRepository.customByIsDownloadedAndSearchValue(isDownloaded,
-								searchValue, pageable.getPageNumber(), pageable.getPageSize());// Q5
+								searchValue, pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize());// Q5
 				} else {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.findByIsDownloadedAndDateRange(isDownloaded,
-								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate);// D10
+								pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate);// D10
 					else
 						userSearchList = userSearchRepository.findByIsDownloaded(isDownloaded, pageable).getContent();
 				}
@@ -2267,13 +2267,13 @@ public class UserSearchService {
 				if (searchValue != null && searchValue != "") {
 					if (fromDate != null)
 						userSearchList = userSearchRepository.customBySearchValueAndDateRange(searchValue,
-								pageable.getPageNumber(), pageable.getPageSize(), fromDate, toDate); // D11
+								pageable.getPageNumber()*pageable.getPageSize(), pageable.getPageSize(), fromDate, toDate); // D11
 					else
-						userSearchList = userSearchRepository.customBySearchValue(searchValue, pageable.getPageNumber(),
+						userSearchList = userSearchRepository.customBySearchValue(searchValue, pageable.getPageNumber()*pageable.getPageSize(),
 								pageable.getPageSize()); // Q6
 				} else {
 					if (fromDate != null)
-						userSearchList = userSearchRepository.findAllByDateRange(pageable.getPageNumber(),
+						userSearchList = userSearchRepository.findAllByDateRange(pageable.getPageNumber()*pageable.getPageSize(),
 								pageable.getPageSize(), fromDate, toDate);// D12
 					else
 						userSearchList = userSearchRepository.findAll(pageable).getContent();
