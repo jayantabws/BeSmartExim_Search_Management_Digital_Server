@@ -58,15 +58,14 @@ public class UserSearchController {
 		UserSearchResponse userSearchResponse = userSearchService.search(userSearchRequest, accessedBy);
 
 		// System.out.println(userSearchRequest);
-		if(userSearchResponse == null)
-			return new ResponseEntity<>("UNAUTHORIZED ACCESS",HttpStatus.UNAUTHORIZED);
+		if (userSearchResponse == null)
+			return new ResponseEntity<>("UNAUTHORIZED ACCESS", HttpStatus.UNAUTHORIZED);
 		return new ResponseEntity<>(userSearchResponse, HttpStatus.CREATED);
 	}
 
 	@PutMapping(value = "/updatesearchcount/{searchId}", consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> updatesearchcount(@RequestBody @Valid SearchCountUpdateRequest searchCountUpdateRequest,
-			@PathVariable Long searchId, @RequestHeader(required = true) Long accessedBy)
-			throws Exception {
+			@PathVariable Long searchId, @RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("Request : /search-management/updatesearchcount");
 		userSearchService.updatesearchcount(searchCountUpdateRequest, searchId, accessedBy);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -74,8 +73,8 @@ public class UserSearchController {
 
 	@PutMapping("/downloadsearch")
 	public ResponseEntity<?> downloadsearch(@RequestParam(required = true) Long searchId,
-			@RequestParam(required = false) Long recordsDownloaded,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
+			@RequestParam(required = false) Long recordsDownloaded, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
 		logger.info("Request : /search-management/downloadsearch");
 		userSearchService.downloadsearch(searchId, accessedBy, recordsDownloaded);
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -241,8 +240,8 @@ public class UserSearchController {
 	}
 
 	@GetMapping(value = "/search/details", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> SearchDetails(@RequestParam Long searchId,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
+	public ResponseEntity<?> SearchDetails(@RequestParam Long searchId, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		SearchDetailsResponse searchDetailsResponse = userSearchService.searchDetails(searchId);
@@ -252,8 +251,8 @@ public class UserSearchController {
 	}
 
 	@GetMapping(value = "/search/topFiveQueries", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> topFiveQueries(@RequestParam Long usetId,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
+	public ResponseEntity<?> topFiveQueries(@RequestParam Long usetId, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
 		logger.info("accessedBy = " + accessedBy);
 
 		SearchDetailsResponse searchDetailsResponse = userSearchService.topFiveQueries(usetId);
@@ -351,7 +350,8 @@ public class UserSearchController {
 		}
 
 		SearchDetailsResponse searchDetailsResponse = userSearchService.listAllQueriesNew(userId, uplineId,
-				isDownloaded, accessedBy, searchValue, PageRequest.of(pageNumber, pageSize, Sort.by("createdDate").descending()), fd, td);
+				isDownloaded, accessedBy, searchValue,
+				PageRequest.of(pageNumber, pageSize, Sort.by("createdDate").descending()), fd, td);
 
 		return ResponseEntity.ok(searchDetailsResponse);
 
@@ -428,31 +428,30 @@ public class UserSearchController {
 		return ResponseEntity.ok(listMonthwiseResponse);
 	}
 
-	
 	@GetMapping(value = "/industrygraph", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<List<GraphResponse>> getIndustryGraphData(@RequestParam(required = true) String exImp,
 			@RequestParam(required = true) String fromDate, @RequestParam(required = true) String toDate,
 			@RequestParam(required = true) String hsCode, @RequestHeader(required = true) Long accessedBy)
 			throws Exception {
 		logger.info("Request : /search-management/industrygraph");
-		
+
 		List<GraphResponse> res = this.userSearchService.industryGraph(exImp, fromDate, toDate, hsCode);
-		
+
 		return ResponseEntity.ok(res);
 	}
-	
+
 	@GetMapping(value = "/hscodelist", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<List<HsCodeList>> getHsCodeList(@RequestParam(required = true) String exImp,@RequestParam(required = true) Integer digit,
-			@RequestHeader(required = true) Long accessedBy) throws Exception {
-		
+	public ResponseEntity<List<HsCodeList>> getHsCodeList(@RequestParam(required = true) String exImp,
+			@RequestParam(required = true) Integer digit, @RequestHeader(required = true) Long accessedBy)
+			throws Exception {
+
 		logger.info("Request : /search-management/hscodelist");
 
-		List<HsCodeList> listHscodesResponse = userSearchService.getListOfHsCode(exImp,digit, accessedBy);
+		List<HsCodeList> listHscodesResponse = userSearchService.getListOfHsCode(exImp, digit, accessedBy);
 
 		return ResponseEntity.ok(listHscodesResponse);
 	}
-	
-	
+
 //	@GetMapping(value = "/realtivegraph", produces = MediaType.APPLICATION_JSON_VALUE)
 //	public ResponseEntity<List<GraphResponse>> getRelativeGraphData(@RequestParam(required = true) String exImp,@RequestParam(required = true) String countryCode,
 //			@RequestParam(required = true) String fromDate, @RequestParam(required = true) String toDate,
