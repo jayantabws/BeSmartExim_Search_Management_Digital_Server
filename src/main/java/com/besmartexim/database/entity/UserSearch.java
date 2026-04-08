@@ -51,6 +51,9 @@ public class UserSearch {
 	
 	@Column(name = "records_downloaded")
 	private Long recordsDownloaded;
+	
+	@Column(name = "ip_address")
+	private String ipAddress;
 
 	public Long getId() {
 		return id;
@@ -154,6 +157,14 @@ public class UserSearch {
 
 	public void setRecordsDownloaded(Long recordsDownloaded) {
 		this.recordsDownloaded = recordsDownloaded;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 
 	

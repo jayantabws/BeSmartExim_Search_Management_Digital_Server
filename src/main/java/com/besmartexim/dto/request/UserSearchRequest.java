@@ -87,6 +87,7 @@ public class UserSearchRequest {
 	
 	private String conditionProductDesc;
 	
+	private String ipAddress;
 	
 	public SearchType getSearchType() {
 		return searchType;
@@ -374,6 +375,14 @@ public class UserSearchRequest {
 
 	public void setConditionProductDesc(String conditionProductDesc) {
 		this.conditionProductDesc = conditionProductDesc;
+	}
+
+	public String getIpAddress() {
+		return ipAddress;
+	}
+
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
 	}
 	
 	

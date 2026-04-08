@@ -47,10 +47,10 @@ public class UserSearchController {
 	private UserSearchService userSearchService;
 
 	@PostMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<?> search(@RequestBody @Valid UserSearchRequest userSearchRequest,
+	public ResponseEntity<?> search(@RequestBody @Valid UserSearchRequest userSearchRequest, @RequestHeader(required = false) String ipAddress,
 			@RequestHeader(required = true) Long accessedBy) throws Exception {
 		logger.info("Request : /search-management/search");
-		// mstContinentService.continentCreate(mstContinentRequest, accessedBy);
+		userSearchRequest.setIpAddress(ipAddress);
 		if ("incoterm".equalsIgnoreCase(userSearchRequest.getOrderByColumn())
 				&& "IMPORT".equalsIgnoreCase(userSearchRequest.getTradeType().getValue())) {
 			userSearchRequest.setOrderByColumn("incoterms");

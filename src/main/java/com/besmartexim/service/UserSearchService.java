@@ -129,12 +129,14 @@ public class UserSearchService {
 			userSearch.setSearchJson(objectMapper.writeValueAsString(userSearchRequest));
 			String query = queryUtil.buildSearchQuery(userSearchRequest);
 			userSearch.setSearchQuery(query);
+			userSearch.setIpAddress(userSearchRequest.getIpAddress());
 			userSearchRepository.save(userSearch);
 		} else {
 			UserSearch existingUserSearch = userSearchRepository.findById(userSearchRequest.getSearchId()).get();
 			existingUserSearch.setId(userSearchRequest.getSearchId());
 			existingUserSearch.setModifiedDate(new Date());
 			existingUserSearch.setModifiedBy(accessedBy);
+			existingUserSearch.setIpAddress(userSearchRequest.getIpAddress());
 			// existingUserSearch.setIsSaved("N");
 			// existingUserSearch.setIsDownloaded("N");
 			existingUserSearch.setSearchJson(objectMapper.writeValueAsString(userSearchRequest));
@@ -2328,7 +2330,7 @@ public class UserSearchService {
 			searchDetails.setIsDownloaded(userSearch.getIsDownloaded());
 			searchDetails.setDownloadedDate(userSearch.getDownloadedDate());
 			searchDetails.setDownloadedBy(userSearch.getDownloadedBy());
-
+			searchDetails.setIpAddress(userSearch.getIpAddress());
 			if (userSearch.getDownloadedBy() != null) {
 
 				userEntity = userRepository.findById(userSearch.getDownloadedBy()).orElse(null);

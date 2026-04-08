@@ -23,7 +23,7 @@ public class SearchDetails {
 	public String downloadedByName;
 	public String downloadedByEmail;
 	public Long recordsDownloaded;
-	
+	private String ipAddress;
 	
 	public Long getSearchId() {
 		return searchId;
@@ -103,10 +103,10 @@ public class SearchDetails {
 	public void setRecordsDownloaded(Long recordsDownloaded) {
 		this.recordsDownloaded = recordsDownloaded;
 	}
-	
-	
-	
-	
-
-	
+	public String getIpAddress() {
+		return ipAddress;
+	}
+	public void setIpAddress(String ipAddress) {
+		this.ipAddress = ipAddress;
+	}
 }
