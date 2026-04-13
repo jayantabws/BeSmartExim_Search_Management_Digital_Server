@@ -202,4 +202,9 @@ public interface UserSearchRepository extends JpaRepository<UserSearch, Long> {
 	@Query(nativeQuery = true, value = "SELECT count(*) FROM user_search where created_date between :fromDate and :toDate")
 	long countByDateRange(Date fromDate, Date toDate);//DC12
 
+	@Query(nativeQuery = true, value = "SELECT * FROM user_search where created_by in (select [id] from [CUS_DB].[dbo].[users] where company_name=:companyName ) order by created_date desc")
+	List<UserSearch> getCompanyWiseData(String companyName);
+	
+	@Query(nativeQuery = true, value = " select distinct([company_name]) from [CUS_DB].[dbo].[users]")
+	List<String> getUniqueCompanyNames();
 }

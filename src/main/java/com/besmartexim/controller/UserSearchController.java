@@ -452,15 +452,20 @@ public class UserSearchController {
 		return ResponseEntity.ok(listHscodesResponse);
 	}
 
-//	@GetMapping(value = "/realtivegraph", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<List<GraphResponse>> getRelativeGraphData(@RequestParam(required = true) String exImp,@RequestParam(required = true) String countryCode,
-//			@RequestParam(required = true) String fromDate, @RequestParam(required = true) String toDate,
-//			@RequestParam(required = true) String hsCode, @RequestHeader(required = true) Long accessedBy) throws Exception {
-//		
-//		logger.info("Request : /search-management/realtivegraph");
-//
-//		List<GraphResponse> listHscodesResponse = userSearchService.getGraphData(exImp,countryCode, fromDate, toDate, hsCode,accessedBy);
-//
-//		return ResponseEntity.ok(listHscodesResponse);
-//	}
+	@GetMapping(value = "/companyqueries", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<SearchDetailsResponse> generateQueriesCompanyWise(@RequestParam(required = true) String companyName,
+			@RequestHeader(required = true) Long accessedBy) throws Exception {
+		
+		logger.info("Request : /search-management/companyqueries");
+		SearchDetailsResponse searchDetailsResponse = userSearchService.companyWiseData(companyName, accessedBy);
+		return ResponseEntity.ok(searchDetailsResponse);
+	}
+	
+	@GetMapping(value = "/companynames", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<List<String>> generateUniqueCompanyName(@RequestHeader(required = true) Long accessedBy) throws Exception {
+		
+		logger.info("Request : /search-management/companynames");
+		List<String> companyList = userSearchService.getCompanyNames(accessedBy);
+		return ResponseEntity.ok(companyList);
+	}
 }

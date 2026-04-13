@@ -57,6 +57,8 @@ import com.besmartexim.dto.response.SuggestionListResponse;
 import com.besmartexim.dto.response.UserSearchResponse;
 import com.besmartexim.util.QueryConstant;
 import com.besmartexim.util.QueryUtil;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Service
@@ -2361,13 +2363,63 @@ public class UserSearchService {
 			searchDetails.setRecordsDownloaded(userSearch.getRecordsDownloaded());
 
 			list.add(searchDetails);
-		}
-
+		} 
+		
 		searchDetailsResponse.setQueryList(list);
 		searchDetailsResponse = convertCountryToList(searchDetailsResponse);
 
 		return searchDetailsResponse;
 	}
+	
+	
+/*	private List<SearchDetails> generateQueryResult(List<UserSearch> userSearchList, Long accessedBy) throws Exception{
+		List<SearchDetails> list = new ArrayList<SearchDetails>();
+		SearchDetails searchDetails = null;
+		
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.add("accessedBy", "" + accessedBy);
+		headers.add("Authorization", "Basic YXBpLWV4aW13YXRjaDp1ZTg0Q1JSZnRAWGhBMyRG");
+
+		for (Iterator<UserSearch> iterator = userSearchList.iterator(); iterator.hasNext();) {
+			UserSearch userSearch = (UserSearch) iterator.next();
+			searchDetails = new SearchDetails();
+			searchDetails.setSearchId(userSearch.getId());
+			searchDetails.setCreatedDate(userSearch.getCreatedDate());
+			searchDetails.setTotalRecords(userSearch.getTotalRecords());
+			searchDetails.setCreatedBy(userSearch.getCreatedBy());
+			searchDetails
+					.setUserSearchQuery(objectMapper.readValue(userSearch.getSearchJson(), UserSearchRequest.class));
+
+			User userEntity = userRepository.findById(userSearch.getCreatedBy()).orElse(null);
+
+			if (userEntity != null) {
+				searchDetails.setCreatedByName(userEntity.getFirstname() + " " + userEntity.getLastname());
+				searchDetails.setCreatedByEmail(userEntity.getEmail());
+			}
+
+			searchDetails.setIsDownloaded(userSearch.getIsDownloaded());
+			searchDetails.setDownloadedDate(userSearch.getDownloadedDate());
+			searchDetails.setDownloadedBy(userSearch.getDownloadedBy());
+			searchDetails.setIpAddress(userSearch.getIpAddress());
+			if (userSearch.getDownloadedBy() != null) {
+
+				userEntity = userRepository.findById(userSearch.getDownloadedBy()).orElse(null);
+
+				if (userEntity != null) {
+					searchDetails.setDownloadedByName(userEntity.getFirstname() + " " + userEntity.getLastname());
+					searchDetails.setDownloadedByEmail(userEntity.getEmail());
+				}
+
+			}
+
+			searchDetails.setRecordsDownloaded(userSearch.getRecordsDownloaded());
+
+			list.add(searchDetails);
+		}
+		
+		return list;
+	} */
 
 	public long countAllQueriesNew(Long userId, Long uplineId, String isDownloaded, String searchValue, Long accessedBy,
 			Date fromDate, Date toDate) throws Exception {
@@ -2675,106 +2727,37 @@ public class UserSearchService {
 		return response;
 	}
 
-//	public List<GraphResponse> getGraphData(String exImp, String countryCode, String fromDate, String toDate,
-//			String hsCode, Long accessedBy) throws Exception {
-//
-//		String hsCodeTable = null, industryTable = null;
-//		List<GraphResponse> response = new ArrayList<GraphResponse>();
-//
-//		// Create Table name dynamic...........
-//		if (exImp != null) {
-//			if (exImp.equalsIgnoreCase("Export")) {
-//				hsCodeTable = " [tempdb].[dbo].[EXPORT_FOR_Temp_" + accessedBy + "] ";
-//				industryTable = " [cus_db].[dbo].[INDUSTRY_EXP]";
-//			} else {
-//				hsCodeTable = " [tempdb].[dbo].[IMPORT_FOR_Temp_" + accessedBy + "] ";
-//				industryTable = "[cus_db].[dbo].[INDUSTRY_IMP]";
-//			}
-//		} else
-//			return response;
-//
-//		// Create SQL query for HS-Code value for graph data............
-//		StringBuilder hsCodeQuery = new StringBuilder()
-//				.append("SELECT [month] monthName, SUM([total_value_usd]) AS hsCodeValue FROM ").append(hsCodeTable)
-//				.append(" where");
-//
-//		// Create SQL query for Industry value for graph data............
-//		StringBuilder industryQuery = new StringBuilder()
-//				.append("select [MONTH] as monthName,SUM([value]) as industryValue from ").append(industryTable)
-//				.append(" where [date] between ? and ? and country_code = ?");
-//
-//		if (hsCode == null || hsCode.trim().length() == 0)
-//			return response;
-//		else {
-//			if (hsCode.trim().length() == 8) {
-//				hsCodeQuery.append(" hs_code = '" + hsCode + "' group by [MONTH]");
-//				industryQuery.append(" and hs_code like '" + hsCode.substring(0, 4)
-//						+ "' group by [MONTH],monthserial order by monthserial");
-//			} else if (hsCode.trim().length() == 4) {
-//				hsCodeQuery.append(" hs_code4 = '" + hsCode + "' group by [MONTH]");
-//				industryQuery.append(" and hs_code like '" + hsCode.trim().substring(0, 2)
-//						+ "%' group by [MONTH],monthserial order by monthserial");
-//			} else {
-//				hsCodeQuery.append(" hs_code2 = '" + hsCode + "' group by [MONTH]");
-//				industryQuery.append(
-//						" and hs_code like '" + hsCode + "%' group by [MONTH],monthserial order by monthserial");
-//			}
-//		}
-//
-//		Connection connection = null;
-//		ResultSet rs = null;
-//		Map<String, GraphResponse> map = new HashMap<String, GraphResponse>();
-//		GraphResponse res = null;
-//
-//		try {
-//			connection = jdbcTemplate.getDataSource().getConnection();
-//
-//			PreparedStatement pstmt = connection.prepareStatement(hsCodeQuery.toString());
-//			rs = pstmt.executeQuery();
-//			logger.info("SQL Query = " + hsCodeQuery);
-//
-//			while (rs.next()) {
-//				res = new GraphResponse();
-//				res.setMonthName(rs.getString("monthName"));
-//				res.setHsCodeValue((rs.getString("hsCodeValue") != null)
-//						? new BigDecimal(rs.getString("hsCodeValue")).setScale(3, RoundingMode.HALF_UP)
-//						: null);
-//
-//				map.put(res.getMonthName(), res);
-//			}
-//
-//			pstmt = connection.prepareStatement(industryQuery.toString());
-//			pstmt.setString(1, fromDate);
-//			pstmt.setString(2, toDate);
-//			pstmt.setString(3, countryCode);
-//			rs = pstmt.executeQuery();
-//			logger.info("SQL Query = " + industryQuery);
-//
-//			while (rs.next()) {
-//				res = (map.get(rs.getString("monthName")) != null) ? map.get(rs.getString("monthName"))
-//						: new GraphResponse(rs.getString("monthName"));
-//				res.setIndustryValue((rs.getString("industryValue") != null)
-//						? new BigDecimal(rs.getString("industryValue")).setScale(3, RoundingMode.HALF_UP)
-//						: null);
-//
-//				double codeValue = (res.getHsCodeValue() != null) ? res.getHsCodeValue().doubleValue() : 0.00d;
-//				double industryValue = (res.getIndustryValue() != null) ? res.getIndustryValue().doubleValue() : 0.01d;
-//				double result = (codeValue / industryValue) * 100;
-//				res.setRelativeStrengthValue(new BigDecimal(result).setScale(3, RoundingMode.HALF_UP));
-//
-//				response.add(res);
-//			}
-//
-//		} catch (Exception e) {
-//			logger.error(e.toString());
-//		} finally {
-//			if (rs != null)
-//				rs.close();
-//			if (connection != null)
-//				connection.close();
-//		}
-//
-//		return response;
-//	}
+	public SearchDetailsResponse companyWiseData(String companyName, Long accessedBy) throws Exception {
+		SearchDetailsResponse searchDetailsResponse = new SearchDetailsResponse();
+		List<UserSearch> userSearchList = this.userSearchRepository.getCompanyWiseData(companyName);
+		
+		SearchDetails searchDetails = null;
+		List<SearchDetails> list = new ArrayList<SearchDetails>();
+		for (Iterator<UserSearch> iterator = userSearchList.iterator(); iterator.hasNext();) {
+			UserSearch userSearch = (UserSearch) iterator.next();
+			searchDetails = new SearchDetails();
+			searchDetails.setSearchId(userSearch.getId());
+			searchDetails.setCreatedDate(userSearch.getCreatedDate());
+			searchDetails.setTotalRecords(userSearch.getTotalRecords());
+			searchDetails.setCreatedBy(userSearch.getCreatedBy());
+			searchDetails.setUserSearchQuery(objectMapper.readValue(userSearch.getSearchJson(), UserSearchRequest.class));
+			searchDetails.setIsDownloaded(userSearch.getIsDownloaded());
+			searchDetails.setDownloadedDate(userSearch.getDownloadedDate());
+			searchDetails.setDownloadedBy(userSearch.getDownloadedBy());
+			searchDetails.setIpAddress(userSearch.getIpAddress());
+			searchDetails.setRecordsDownloaded(userSearch.getRecordsDownloaded());
 
+			list.add(searchDetails);
+		}
+		
+		searchDetailsResponse.setQueryList(list);
+		searchDetailsResponse = convertCountryToList(searchDetailsResponse);
+
+		return searchDetailsResponse;
+	}
+	
+	public List<String> getCompanyNames(Long accessedBy) throws Exception {
+		
+		return this.userSearchRepository.getUniqueCompanyNames();
+	}
 }
